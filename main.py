@@ -90,4 +90,3 @@ def registration_finished():
         context = {'email': request.args.get('email'), 'login_success': True}
     return render_template('index.html', context=context)
 
-
