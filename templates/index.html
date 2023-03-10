@@ -5,12 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-<p>wello {{ context.name }}</p>
-<form method="post" action="/">
-    <input name="name" type="text">
-    <input name="send" type="submit">
+{% if 'login_success' in context %} <p style="color:green;font-size:48px;"> Congratulations! {{ context.email }}</p>
+<p><a href="/">back to index</a></p>
+{% else %}
 
-</form>
-
+<p><a href="/login">login</a></p>
+<p><a href="/registration">registration</a></p>
+{%endif%}
 </body>
 </html>
