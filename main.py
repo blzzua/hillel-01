@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import json
 
 app = Flask(__name__)
@@ -71,10 +71,10 @@ def login():
         email = request.form.get('email', '')
         password = request.form.get('password', None)
         if DBUsers.check_password(email=email, password=password):
-            return redirect(f'/registration_finished?email={email}')
+            return redirect(url_for('registration_finished', email=email))
         else:
             # check_password is failed
-            return redirect(f'/login?email={email}&failed')
+            return redirect(url_for('login', email=email, failed=True))
 
     context = {}
     if 'email' in request.args:
