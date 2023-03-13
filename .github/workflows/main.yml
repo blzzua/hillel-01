@@ -3,6 +3,8 @@ name: Docker
 on:
   push:
     branches: [ hw-03 ]
+  commit:
+    branches: [ hw-03 ]
   pull_request:
     branches: [ hw-03 ]
 
