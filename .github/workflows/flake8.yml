@@ -8,7 +8,7 @@ on:
 
 
 jobs:
-  build:
+  flake8-protect:
     runs-on: ubuntu-latest
     strategy:
       matrix:
