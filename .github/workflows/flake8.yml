@@ -8,8 +8,7 @@ on:
 
 
 jobs:
-  build:
-    name: flake8
+  flake8:
     runs-on: ubuntu-latest
     strategy:
       matrix:
