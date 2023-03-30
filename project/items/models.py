@@ -36,7 +36,8 @@ class Category(models.Model):
         if self.image:
             return mark_safe(f'<img src = "{self.image.url}" width = "120"/>')
         else:
-            return mark_safe(f'<b>NO IMAGE</b>')
+            return mark_safe('<b>NO IMAGE</b>')
+
 
 class Item(models.Model):
     id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
@@ -57,10 +58,11 @@ class Item(models.Model):
         if self.image:
             return mark_safe(f'<img src = "{self.image.url}" width = "120"/>')
         else:
-            return mark_safe(f'<b>NO IMAGE</b>')
+            return mark_safe('<b>NO IMAGE</b>')
 
     img_preview.short_description = 'Image'
     img_preview.allow_tags = True
+
 
 class Discount(models.Model):
     class DiscountType(models.IntegerChoices):

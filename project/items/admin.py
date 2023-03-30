@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.utils.safestring import mark_safe
 
 # Register your models here.
 from .models import Item, Category, Discount, Order, OrderItem
@@ -7,6 +6,7 @@ from .models import Item, Category, Discount, Order, OrderItem
 
 admin.site.register(Discount)
 admin.site.register(Order)
+
 
 @admin.register(OrderItem)
 class AdminOrderItem(admin.ModelAdmin):
@@ -37,8 +37,9 @@ class AdminItem(admin.ModelAdmin):
             'fields': ('description', 'image'),
         }),
     )
-    list_display = ('id','is_active', 'sku', 'caption', 'img_preview')
+    list_display = ('id', 'is_active', 'sku', 'caption', 'img_preview')
     list_editable = ('caption', )
+
 
 @admin.register(Category)
 class AdminCategory(admin.ModelAdmin):
