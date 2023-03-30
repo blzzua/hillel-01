@@ -9,7 +9,6 @@ admin.site.register(Order)
 admin.site.register(OrderItem)
 
 
-
 class SomeInLine(admin.StackedInline):
     model = Item.categories.through
     extra = 1
