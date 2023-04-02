@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Feedback</h1>
+<!--
+<form >
+  <label for="response">Feedback Response:</label>
+  <textarea id="response" name="response" required></textarea>
+
+  <label for="rating">Rate the Restaurant:</label>
+  <select id="rating" name="rating" required>
+    <option value="">-- Select a Rating --</option>
+    <option value="1">1 Star</option>
+    <option value="2">2 Stars</option>
+    <option value="3">3 Stars</option>
+    <option value="4">4 Stars</option>
+    <option value="5">5 Stars</option>
+  </select>
+    <br>
+  <button type="submit">Submit Feedback</button>
+</form>
+-->
+<form method="POST" action="{% url 'feedback_index' %}">
+  {% csrf_token %}
+   <label for="username">Username:</label>
+  <input name="name" id="username" value="{{ request.user.username }}" readonly="true">
+  {{ form.as_p }}
+  <button type="submit">Submit Feedback</button>
+</form>
+
+
+</body>
+</html>
