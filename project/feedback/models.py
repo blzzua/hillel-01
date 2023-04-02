@@ -1,5 +1,3 @@
-from django.db import models
-
 # Create your models here.
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -10,14 +8,13 @@ User = get_user_model()
 
 
 class Feedback(models.Model):
-    name = models.CharField(max_length=255, default='satisfied customer')
+    name = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     response = models.TextField()
     rating = models.IntegerField(
         validators=[
             MinValueValidator(1),
             MaxValueValidator(5),
         ],
-        null=True,
     )
 
     def __str__(self):
@@ -29,6 +26,3 @@ class Feedback(models.Model):
             return "⭐" * num
         else:
             return "⚝"
-
-
-

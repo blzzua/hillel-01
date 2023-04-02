@@ -17,10 +17,9 @@
 <table border="1">
 {% for f in feedbacks %}
   <tr>
-    <td>{{f.name}}</td>
+    <td>{{f.name|default_if_none:"satisfied customer"  }}</td>
     <td>{{f.response}}</td>
     <td>{{f.rating_as_stars}}</td>
-    <td></td>
   </tr>
 
 {%endfor%}

@@ -8,6 +8,7 @@ from os import path
 User = get_user_model()
 MIN_PRICE = 0.1
 
+
 def upload_to(instance, filename):
     _name, extenstion = path.splitext(filename)
     return str(f'products/images/{str(instance.pk)}{extenstion}')
@@ -73,7 +74,6 @@ class Discount(models.Model):
             print(f'Im here. because {self.discount_type=} {Discount.DiscountType.PCT.value=} {Discount.DiscountType.ABS.value=}')
 
 
-
 class Order(models.Model):
     id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
     is_paid = models.BooleanField(default=False)
@@ -102,11 +102,9 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         # donot  check if
-        #if OrderItem.objects.filter(order_id=self, updated_at__gte=self.updated_at):
+        # if OrderItem.objects.filter(order_id=self, updated_at__gte=self.updated_at):
         self.total_price = self.calculate_total_price()
         super(Order, self).save(*args, **kwargs)
-
-
 
 
 class OrderItem(models.Model):
@@ -124,7 +122,6 @@ class OrderItem(models.Model):
     def save(self, *args, **kwargs):
         self.discount_price = self.calculate_price_with_discount()
         super(OrderItem, self).save(*args, **kwargs)
-
 
     def calculate_price_with_discount(self):
         return self.discount_id.calculate(self.item_price * self.quantity)

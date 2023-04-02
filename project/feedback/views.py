@@ -11,12 +11,9 @@ from feedback.models import Feedback
 @login_required(login_url='/admin/login/?next=/feedback/')
 def feedback_index(request):
     if request.method == 'POST':
-        print(request.POST)
         form = FeedbackForm(data=request.POST)
         if form.is_valid():
-            feedback = form.save()
-            feedback.name = request.user.username
-            feedback.save()
+            form.save(fill_name=request.user.username)
             return redirect(reverse('feedback_list'))
     else:
         form = FeedbackForm()
