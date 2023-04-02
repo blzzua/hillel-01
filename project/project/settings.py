@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_admin_listfilter_dropdown',
-    'items'
+    'items',
+    'feedback'
 ]
 
 MIDDLEWARE = [
