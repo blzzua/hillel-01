@@ -3,8 +3,10 @@ import uuid
 from django.db import models
 from os import path
 
+from django.utils.safestring import mark_safe
 
 MIN_PRICE = 0.1
+
 
 def upload_to(instance, filename):
     _name, extenstion = path.splitext(filename)
@@ -16,7 +18,7 @@ class Category(models.Model):
     id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    # image = models.ImageField(null=True, upload_to='images/items/{id}/image')
+    image = models.ImageField(null=True, upload_to=upload_to)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -30,12 +32,18 @@ class Category(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+    def img_preview(self):  # new
+        if self.image:
+            return mark_safe(f'<img src = "{self.image.url}" width = "120"/>')
+        else:
+            return mark_safe('<b>NO IMAGE</b>')
+
 
 class Item(models.Model):
     id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
     caption = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
-    # image = models.ImageField(null=True, upload_to='images/items/{id}/image')
+    image = models.ImageField(null=True, upload_to=upload_to)
     price = models.DecimalField(max_digits=18, decimal_places=2)
     sku = models.CharField(max_length=128)
     categories = models.ManyToManyField(Category, related_name='category', blank=True)
@@ -45,6 +53,15 @@ class Item(models.Model):
 
     def __str__(self):
         return f'{self.caption} [{self.sku}]'
+
+    def img_preview(self):
+        if self.image:
+            return mark_safe(f'<img src = "{self.image.url}" width = "120"/>')
+        else:
+            return mark_safe('<b>NO IMAGE</b>')
+
+    img_preview.short_description = 'Image'
+    img_preview.allow_tags = True
 
 
 class Discount(models.Model):
@@ -60,6 +77,9 @@ class Discount(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.code
+
     def calculate(self, price):
         if not self.is_active:
             return price
@@ -68,8 +88,8 @@ class Discount(models.Model):
                 return max(MIN_PRICE, price - self.amount)
             if self.discount_type == Discount.DiscountType.PCT.value:
                 return max(MIN_PRICE, price * (100 - self.amount) / 100)
+            # TODO: remove debugprint
             print(f'Im here. because {self.discount_type=} {Discount.DiscountType.PCT.value=} {Discount.DiscountType.ABS.value=}')
-
 
 
 class Order(models.Model):
@@ -93,11 +113,9 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         # donot  check if
-        #if OrderItem.objects.filter(order_id=self, updated_at__gte=self.updated_at):
+        # if OrderItem.objects.filter(order_id=self, updated_at__gte=self.updated_at):
         self.total_price = self.calculate_total_price()
         super(Order, self).save(*args, **kwargs)
-
-
 
 
 class OrderItem(models.Model):
@@ -115,7 +133,6 @@ class OrderItem(models.Model):
     def save(self, *args, **kwargs):
         self.discount_price = self.calculate_price_with_discount()
         super(OrderItem, self).save(*args, **kwargs)
-
 
     def calculate_price_with_discount(self):
         return self.discount_id.calculate(self.item_price * self.quantity)
