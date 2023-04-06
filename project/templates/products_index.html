@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for product in products %}
+<p>
+    <img src={{  product.image.url }}" alt="">
+    {{ product.name }} - {{ product.price }}
+</p>
+{% endfor %}
+
+<div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+<!--
+
+        <label for="id_name" id_name>name</label>
+        <input id="id_name" type="text" name="name">
+
+        <label for="id_name" id_name>name</label>
+        <input id="id_name" type="text" name="name">
+        <label for="id_name" id_name>name</label>
+        <input id="id_name" type="text" name="name">
+        <label for="id_name" id_name>name</label>
+        <input id="id_name" type="text" name="name">
+-->
+
+        {{ form.as_p }}
+        <input type="submit">
+    </form>
+    {% for  error in form.errors %}
+        <p>{{ errors }}</p>
+    {% endfor %}
+</div>
+
+</body>
+</html>
