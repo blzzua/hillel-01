@@ -5,6 +5,17 @@
     <title>Title</title>
 </head>
 <body>
-
+{% if request.user.is_anonymous %}
+    <a href="{% url 'accounts_login' %}" >Login</a>
+    <a href="{% url 'accounts_registration' %}" >Register</a>
+{% else %}
+    <h1>Personal Account {{ request.user }}</h1>
+    <ul>
+    {% for key, value in user.items %}
+    <li>{{ key }}: <tt>{{ value }}</tt></li>
+    {% endfor %}
+    <a href="{% url 'accounts_logout' %}" >Logout</a>
+{% endif %}
+</ul>
 </body>
 </html>
