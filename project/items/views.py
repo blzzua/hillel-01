@@ -7,7 +7,7 @@ from items.models import Item
 
 # Create your views here.
 def indexfail(request):
-    return render(request, 'index.html', context={})
+    return render(request, 'login.html', context={})
 
 
 def index(request, *args, **kwargs):
@@ -18,4 +18,4 @@ def index(request, *args, **kwargs):
             form.save()
     else:
         form = ItemsForm()
-    return render(request, 'products_index.html', context={'product': products_list,  'form': form})
+    return render(request, 'login.html', context={'product': products_list,  'form': form})
