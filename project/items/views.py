@@ -1,21 +1,33 @@
 # from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
-from items.forms import ItemsForm
+from items.forms import ItemCreateForm
 from items.models import Item
+from django.contrib import messages
+from django.views.generic import ListView, View
+from django.core.paginator import Paginator
 
 
-# Create your views here.
-def indexfail(request):
-    return render(request, 'login.html', context={})
+class ItemsListView(ListView):
+    model = Item
+    paginate_by = 5
+    paginator = Paginator
+    template_name = 'items/list.html'
 
 
-def index(request, *args, **kwargs):
-    products_list = Item.objects.all()
-    if request.method == 'POST':
-        form = ItemsForm(data=request, files=request.FILES)
+class ItemCreateView(View):
+    def get(self, request):
+        form = ItemCreateForm()
+        context = {'form': form}
+        return render(request, 'items/item_create.html', context)
+
+    def post(self, request):
+        form = ItemCreateForm(data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
-    else:
-        form = ItemsForm()
-    return render(request, 'login.html', context={'product': products_list,  'form': form})
+            messages.success(request, 'Item has been created successfully')
+            return redirect('items_list')
+        else:
+            messages.error(request, 'Error creating item')
+            context = {'form': form}
+            return render(request, 'items/item_create.html', context=context)
