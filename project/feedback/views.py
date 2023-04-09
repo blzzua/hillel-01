@@ -23,7 +23,8 @@ class FeedbackView(View):
 
     def get(self, request):  # feedback_index
         form = FeedbackForm()
-        return render(request, 'feedback_index.html', context={'form': form})
+        return render(request, 'feedback/feedback_index.html', context={'form': form})
+
 
 class FeedbackListView(ListView):
     model = Feedback
