@@ -15,7 +15,6 @@ def upload_to(instance, filename):
     return str(f'products/images/{str(instance.pk)}{extenstion}')
 
 
-# Create your models here.
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, auto_created=True, default=uuid.uuid4)
     name = models.CharField(max_length=255)
@@ -34,7 +33,7 @@ class Category(models.Model):
     def __str__(self):
         return f'{self.name}'
 
-    def img_preview(self):  # new
+    def img_preview(self):
         if self.image:
             return mark_safe(f'<img src = "{self.image.url}" width = "120"/>')
         else:
@@ -90,8 +89,6 @@ class Discount(models.Model):
                 return max(MIN_PRICE, price - self.amount)
             if self.discount_type == Discount.DiscountType.PCT.value:
                 return max(MIN_PRICE, price * (100 - self.amount) / 100)
-            # TODO: remove debugprint
-            print(f'Im here. because {self.discount_type=} {Discount.DiscountType.PCT.value=} {Discount.DiscountType.ABS.value=}')
 
 
 class Order(models.Model):

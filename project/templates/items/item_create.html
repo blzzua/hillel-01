@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Items</title>
+</head>
+<body>
+<h1>Items</h1>
+
+<form method="POST" action="{% url 'items_create' %}">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <button type="submit">Submit Item</button>
+</form>
+
+</body>
+</html>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Items</title>
+</head>
+<body>
+<h1>Items</h1>
+<a href="{% url 'items_create' %}">Create new</a>
+<table border="1">
+{% for item in object_list %}
+  <tr>
+      <td>{{item.img_preview}}</td>
+      <td>sku: {{item.sku}}<br>{{item.id}}</td>
+      <td>{{item.caption}}</td>
+      <td>{{item.price}}</td>
+      <td><a href="#">order</a></td>
+  </tr>
+
+{% empty %}
+   <h4>No items yet.</h4>
+{%endfor%}
+
+
+<p class="pagination">
+{% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+{% endif %}
+<span class="current-page">{{ page_obj }}</span>
+{% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">next</a>
+{% endif %}
+</p>
+
+</table>
+
+</body>
+</html>
+</body>
+</html>
