@@ -15,14 +15,28 @@
 <h1>Feedbacks</h1>
 
 <table border="1">
-{% for f in feedbacks %}
+{% for f in object_list %}
   <tr>
     <td>{{f.name|default_if_none:"satisfied customer"  }}</td>
     <td>{{f.response}}</td>
     <td>{{f.rating_as_stars}}</td>
   </tr>
 
+{% empty %}
+   <h4>No articles yet.</h4>
 {%endfor%}
+
+
+<p class="pagination">
+{% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+{% endif %}
+<span class="current-page">{{ page_obj }}</span>
+{% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}">next</a>
+{% endif %}
+</p>
+
 </table>
 
 </body>

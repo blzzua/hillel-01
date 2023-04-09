@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.paginator import Paginator
 
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from django.views.generic import TemplateView, RedirectView
-from django.views.generic.edit import FormMixin, TemplateResponseMixin
+from django.views.generic import ListView
 from django.views import View
 
 from feedback.forms import FeedbackForm
@@ -25,7 +25,14 @@ class FeedbackView(View):
         form = FeedbackForm()
         return render(request, 'feedback_index.html', context={'form': form})
 
-class FeedbackListView(View):
-    def get(self, request):
-        feedbacks = Feedback.objects.all()
-        return render(request, 'feedback_list.html', context={'feedbacks': feedbacks})
+class FeedbackListView(ListView):
+    model = Feedback
+    paginate_by = 5
+    paginator = Paginator
+    template_name = 'feedback/list.html'
+
+    def get_queryset(self):
+        return super().get_queryset().order_by('-created_at')
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
