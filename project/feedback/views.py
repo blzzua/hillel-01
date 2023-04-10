@@ -20,6 +20,8 @@ class FeedbackView(View):
         if form.is_valid():
             form.save(fill_name=request.user.username)
             return redirect(reverse('feedback_list'))
+        else:
+            return render(request, 'feedback/feedback_index.html', context={'form': form})
 
     def get(self, request):  # feedback_index
         form = FeedbackForm()
@@ -34,6 +36,3 @@ class FeedbackListView(ListView):
 
     def get_queryset(self):
         return super().get_queryset().order_by('-created_at')
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
