@@ -3,7 +3,7 @@ from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
 
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse_lazy
 
 from django.views.generic import ListView
 from django.views import View
@@ -14,7 +14,7 @@ from feedback.models import Feedback
 
 # Create your views here
 class FeedbackView(View):
-    @method_decorator(login_required(login_url='/admin/login/?next=/feedback/'))
+    @method_decorator(login_required(login_url=reverse_lazy('accounts_login')))
     def post(self, request):
         form = FeedbackForm(data=request.POST)
         if form.is_valid():
