@@ -32,9 +32,12 @@
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
-         <b>&nbsp;TODO: show this only anon, and shot hello message for auth users</b>
-        <button type="button" class="btn btn-link">Login</button>
-        <button type="button" class="btn btn-link">Register</button>
+      {% if request.user.is_anonymous %}
+        <a class="btn btn-link" role="button" href="{% url 'accounts_login' %}">Login</a>
+        <a class="btn btn-link" role="button" href="{% url 'accounts_registration' %}">Register</a>
+      {% else %}
+        <a class="btn btn-secondary" role="button" href="{% url 'accounts_logout' %}" >Logout</a>
+      {% endif %}
     </div>
   </div>
 </nav>

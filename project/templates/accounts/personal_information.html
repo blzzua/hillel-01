@@ -1,21 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% include 'base.html' %}
 {% if request.user.is_anonymous %}
     <a href="{% url 'accounts_login' %}" >Login</a>
     <a href="{% url 'accounts_registration' %}" >Register</a>
 {% else %}
+<div class="container col-6">
     <h1>Personal Account {{ request.user }}</h1>
-    <ul>
+    <ul class="list-group">
     {% for key, value in user.items %}
-    <li>{{ key }}: <tt>{{ value }}</tt></li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-2">{{ key }}
+                </div><div class="col">
+                <tt>{{ value }}</tt></div>
+            </div>
+        </li>
     {% endfor %}
-    <a href="{% url 'accounts_logout' %}" >Logout</a>
+    </ul>
+    </div>
+</div>
 {% endif %}
-</ul>
-</body>
-</html>
