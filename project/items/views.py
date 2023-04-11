@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from items.forms import ItemCreateForm
 from items.models import Item
 from django.contrib import messages
-from django.views.generic import ListView, View
+from django.views.generic import ListView, View, TemplateView
 from django.core.paginator import Paginator
 
 
@@ -31,3 +31,6 @@ class ItemCreateView(View):
             messages.error(request, 'Error creating item')
             context = {'form': form}
             return render(request, 'items/item_create.html', context=context)
+
+class MainPage(TemplateView):
+    template_name = "index.html"

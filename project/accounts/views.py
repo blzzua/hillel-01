@@ -1,7 +1,7 @@
 import logging
 
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import TemplateView, RedirectView, FormView
 from django.views.generic.edit import FormMixin
 from django.contrib.auth import login, authenticate, logout
 # from django.contrib.auth.decorators import login_required
@@ -12,7 +12,7 @@ User = get_user_model()
 
 
 # Create your views here.
-class LoginView(TemplateView, FormMixin):
+class LoginView(FormView):
     template_name = 'accounts/login.html'
     get_redirect_url = 'accounts_personal_information'
     form_class = LoginForm
