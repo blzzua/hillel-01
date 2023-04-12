@@ -7,6 +7,7 @@ class ItemCreateForm(forms.ModelForm):
         model = Item
         exclude = ['id', 'categories']
 
+    description = forms.CharField(widget=forms.Textarea(attrs={"cols": "10", "rows": "5", 'class': 'form-control display-4'}))
     image = forms.ImageField(required=False)
 
     def clean_price(self):

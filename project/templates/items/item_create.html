@@ -1,26 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Items</title>
-</head>
-<body>
-<h1>Items</h1>
+{% extends 'base.html' %}
 
-<form method="POST" action="{% url 'items_create' %}">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <button type="submit">Submit Item</button>
-</form>
+{% block content %}
+    <div class="jumbotron jumbotron-fluid text-center">
+      <div class="container">
+        <h1 class="display-4">Create</h1>
+      </div>
+    </div>
 
-</body>
-</html>
-</body>
-</html>
+    <div class="container">
+        <div class="form-group row">
+        <form class="col col-xl-3" method="post" enctype="multipart/form-data" action="{% url 'items_create' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit Item</button>
+        </form>
+        </div>
+    {% for  error in form.errors %}
+        <p>{{ errors }}</p>
+    {% endfor %}
+    </div>
+
+
+{% endblock %}
+

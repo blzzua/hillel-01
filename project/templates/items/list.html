@@ -1,47 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Items</title>
-</head>
-<body>
-<h1>Items</h1>
-<a href="{% url 'items_create' %}">Create new</a>
-<table border="1">
-{% for item in object_list %}
-  <tr>
-      <td>{{item.img_preview}}</td>
-      <td>sku: {{item.sku}}<br>{{item.id}}</td>
-      <td>{{item.caption}}</td>
-      <td>{{item.price}}</td>
-      <td><a href="#">order</a></td>
-  </tr>
+{% extends 'base.html' %}
 
-{% empty %}
-   <h4>No items yet.</h4>
-{%endfor%}
+{% block content %}
+    <div class="jumbotron jumbotron-fluid text-center">
+      <div class="container">
+        <h1 class="display-4">All Items</h1>
 
+      </div>
+    </div>
 
-<p class="pagination">
-{% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-{% endif %}
-<span class="current-page">{{ page_obj }}</span>
-{% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}">next</a>
-{% endif %}
-</p>
+    <div class="container">
+	    <div class="row">
+			{% for product in object_list %}
+				<div class="col-md-3" style="margin-bottom: 10px; padding: 0px 5px;">
+					<div class="card" style="">
+                        <div style="background: #D2D2D2 url({{ product.image.url }}); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100%; height: 250px;"></div>
+						<div class="card-body">
+							<h5 class="card-title">{{ product.caption }} - <strong>{{ product.price }}</strong></h5>
+							<p class="card-text">{{product.description | truncatechars:55 }}</p>
+							<a  href="#" class="btn btn-primary">Order</a>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+    </div>
 
-</table>
-
-</body>
-</html>
-</body>
-</html>
+{% endblock %}
