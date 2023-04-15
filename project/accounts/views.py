@@ -30,6 +30,7 @@ class LoginView(FormView):
                 return redirect('accounts_personal_information')
             else:
                 form.add_error('password', 'LOGIN FAILED')
+                context['form'] = form
 
         logging.error(form.errors)
         #   request, template_name, context=None, content_type=None, status=None, using=None

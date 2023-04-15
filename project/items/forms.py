@@ -16,3 +16,4 @@ class ItemCreateForm(forms.ModelForm):
             raise forms.ValidationError("Price must be positive")
         if price > 1000_000:
             raise forms.ValidationError("Price is too expensive")
+        return price

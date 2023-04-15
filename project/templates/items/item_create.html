@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load django_bootstrap5 %}
 
 {% block content %}
     <div class="jumbotron jumbotron-fluid text-center">
@@ -9,10 +10,14 @@
 
     <div class="container">
         <div class="form-group row">
-        <form class="col col-xl-3" method="post" enctype="multipart/form-data" action="{% url 'items_create' %}">
+        <form class="form col col-xl-3" method="post" enctype="multipart/form-data" action="{% url 'items_create' %}">
+
+            {{ form.errors }}
+            <!-- {{ form.as_p }} -->
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Submit Item</button>
+            {% bootstrap_form form %}
+            {% bootstrap_button button_type="submit" content="OK" %}
+            {% bootstrap_button button_type="reset" content="Cancel" %}
         </form>
         </div>
     {% for  error in form.errors %}

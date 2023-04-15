@@ -1,20 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Registration</title>
-</head>
-<body>
-
-<h1>Create an Account</h1>
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
 
 {% block content %}
-    <form method="post">
+    <div class="jumbotron jumbotron-fluid text-center">
+      <div class="container">
+        <h1 class="display-4">Create an Account</h1>
+      </div>
+    </div>
+
+  <div class="container col-xl-3">
+    <form  method="post" class="form">
         {{ form.errors }}
+        <!-- {{ form.as_p }} -->
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Register</button>
+        {% bootstrap_form form %}
+        {% bootstrap_button button_type="submit" content="OK" %}
+        {% bootstrap_button button_type="reset" content="Cancel" %}
     </form>
-{% endblock %}
-</body>
-</html>
+  </div>
+{% endblock content %}

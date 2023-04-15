@@ -4,14 +4,12 @@ from django.shortcuts import render, redirect
 from items.forms import ItemCreateForm
 from items.models import Item
 from django.contrib import messages
-from django.views.generic import ListView, View, TemplateView
+from django.views.generic import ListView, View
 from django.core.paginator import Paginator
 
 
 class ItemsListView(ListView):
     model = Item
-    paginate_by = 5
-    paginator = Paginator
     template_name = 'items/list.html'
 
 
@@ -32,5 +30,8 @@ class ItemCreateView(View):
             context = {'form': form}
             return render(request, 'items/item_create.html', context=context)
 
-class MainPage(TemplateView):
-    template_name = "index.html"
+
+class MainPage(ItemsListView):
+    paginate_by = 8
+    paginator = Paginator
+    template_name = 'products_index.html'
