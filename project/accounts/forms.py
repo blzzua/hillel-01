@@ -10,8 +10,9 @@ class LoginForm(models.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'password']
-        username = CharField(label='login:', widget=TextInput(attrs={"autofocus": True}))
-        password = CharField(label='Password', widget=PasswordInput)
+
+    username = CharField(label='Login', widget=TextInput(attrs={"autofocus": True}))
+    password = CharField(label='Password', widget=PasswordInput(attrs={"type": "password"}))
 
     def clean(self):
         username = self.data.get('username')
