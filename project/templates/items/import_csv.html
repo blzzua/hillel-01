@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+<div class="jumbotron-fluid text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col"><h1 class="display-3">Import-Export  Items</h1></div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <h3 class="display-8">Upload CSV File</h3>
+                <div class="form-group">
+                    <form class="form" method="post" enctype="multipart/form-data" action="{% url 'import_items_csv' %}">
+                        {{ form.errors }}
+                        <!-- {{ form.as_p }} -->
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                        {% bootstrap_button button_type="submit" content="Upload" %}
+                        {% bootstrap_button button_type="reset" content="Cancel" %}
+                    </form>
+                </div>
+                {% for error in form.errors %}
+                <p>{{ errors }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="col-6">
+                <h3 class="display-8">Export CSV File</h3>
+                <form class="form" method="get" action="{% url 'export_items_csv' %}">
+                    <!-- <a class="btn btn-outline-success" href="{% url 'export_items_csv' %}">Download</a> -->
+                    <button class="btn btn-outline-success">Download</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    {% if saved_items %}
+            <hr class="my-12 mt-5"/>
+            <h3 class="display-8 ">Uploaded Items</h3>
+            <div class="row mx-5 mt-5">
+            {% for item in saved_items %}
+                        <div class="col col-md-1" style="margin-bottom: 10px; padding: 0px 5px;">
+                            <div class="card" style="">
+                                <div style="background: #D2D2D2 {% if item.image %}url({{ item.image.url }}{% endif %}); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100%; height: 150px;"></div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.caption }} <br> <strong>{{ item.price }}</strong></h5>
+                                    <p class="card-text text-muted">{{item.sku }}</p>
+                                    <p class="card-text">{{item.description | truncatechars:55 }}</p>
+
+                                </div>
+                            </div>
+                        </div>
+            {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

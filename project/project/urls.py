@@ -16,7 +16,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from items.views import MainPage
+from items.views import MainPage, ImportItemsListView, ExportItemsListView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -27,6 +27,9 @@ urlpatterns = [
     path('items/', include('items.urls')),
     path('accounts/', include('accounts.urls')),
     path('feedback/', include('feedback.urls')),
+    path('import/items', ImportItemsListView.as_view(), name='import_items_csv'),
+    path('export/items.csv', ExportItemsListView.as_view(), name='export_items_csv'),
+
 ]
 
 if settings.DEBUG:

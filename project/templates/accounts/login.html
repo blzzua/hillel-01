@@ -11,14 +11,14 @@
     <div class="container">
         <div class="form-group row d-flex justify-content-center align-items-center">
             <div class="col-xl-4">
-            <form method="post" class="form mx-auto">
-                {{ form.errors }}
-                {% csrf_token %}
-                {% bootstrap_form form %}
-                {% bootstrap_button button_type="submit" content="Login" %}
-                {% bootstrap_button button_type="reset" content="Cancel" %}
-            </form>
-        </div>
+                <form method="post" class="form mx-auto">
+                    {{ form.errors }}
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    {% bootstrap_button button_type="submit" content="Login" %}
+                    {% bootstrap_button button_type="reset" content="Cancel" %}
+                </form>
+            </div>
         </div>
     {% for  error in form.errors %}
         <p>{{ errors }}</p>
