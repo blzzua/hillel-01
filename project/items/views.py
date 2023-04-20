@@ -3,6 +3,7 @@ import csv
 import logging
 import contextlib
 
+from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from items.forms import ItemCreateForm, ImportItemsCSVForm
@@ -57,36 +58,41 @@ class ImportItemsListView(View):
             # TODO implement single-transaction .
             decoded_file = csv_file.read().decode('utf-8').splitlines()
             dict_reader = csv.DictReader(decoded_file)
-            errors = []
             on_duplicate = form.cleaned_data['on_duplicate']
-            saved_items = []
-            ctx_mgr = transaction.atomic() if form.cleaned_data['single_transaction'] else contextlib.nullcontext()
+            upload_items = []
             for row in dict_reader:
-                if Item.objects.filter(caption=row['caption']).exists():
-                    logging.error(f'update {row["caption"]} with {on_duplicate=}')
-                    if on_duplicate == 'update':
-                        # item = Item.objects.filter(caption=row['caption']).first()
-                        item_qs = Item.objects.filter(caption=row['caption'])
-                        item_qs.update(
-                            caption=row['caption'], sku=row['sku'], price=row['price'],
-                            is_active=row['is_active'], description=row['description']
-                        )
-                        item = Item.objects.filter(caption=row['caption']).first()
-                        errors.append(item)
-                    elif on_duplicate == 'ignore':
-                        pass
-                else:
-                    logging.warning(f'insert {row["caption"]} with {on_duplicate=}')
-                    try:
+                try:
+                    if Item.objects.filter(caption=row['caption']).exists():
+                        logging.error(f'update {row["caption"]} with {on_duplicate=}')
+                        if on_duplicate == 'update':
+                            # item = Item.objects.filter(caption=row['caption']).first()
+                            item_qs = Item.objects.filter(caption=row['caption'])
+                            item_qs.update(
+                                caption=row['caption'], sku=row['sku'], price=row['price'],
+                                is_active=row['is_active'], description=row['description']
+                            )
+                            item = Item.objects.filter(caption=row['caption']).first()
+                            item.upload_result = 'upload'
+                            upload_items.append(item)
+                        elif on_duplicate == 'ignore':
+                            item = Item.objects.filter(caption=row['caption']).first()
+                            item.upload_result = 'ignore'
+                            upload_items.append(item)
+                    else:
+                        logging.warning(f'insert {row["caption"]} with {on_duplicate=}')
                         item = Item.objects.create(caption=row['caption'], sku=row['sku'], price=row['price'],
-                                               is_active=row['is_active'], description=row['description'] )
-                        saved_items.append(item)
-                    except:
-                        errors.append(item)
-                        print(errors)
+                                               is_active=row['is_active'], description=row['description'])
+                        item.upload_result = 'upload'
+                        upload_items.append(item)
+                except ValidationError:
+                    item = row
+                    item['upload_result'] = 'error'
+                    upload_items.append(item)
 
-                #form = ImportItemsCSVForm()
-            return render(request, 'items/import_csv.html', context={'form': form, 'saved_items': saved_items, }, )
+            return render(request, 'items/import_csv.html', context={'form': form, 'upload_items': upload_items, }, )
+
+        else: # not form.is_valid():
+            return render(request, 'items/import_csv.html', context={'form': form})
 
 
 class ExportItemsListView(View):

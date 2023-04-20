@@ -35,19 +35,18 @@
 
         </div>
     </div>
-    {% if saved_items %}
+    {% if upload_items %}
             <hr class="my-12 mt-5"/>
             <h3 class="display-8 ">Uploaded Items</h3>
             <div class="row mx-5 mt-5">
-            {% for item in saved_items %}
+            {% for item in upload_items %}
                         <div class="col col-md-1" style="margin-bottom: 10px; padding: 0px 5px;">
-                            <div class="card" style="">
-                                <div style="background: #D2D2D2 {% if item.image %}url({{ item.image.url }}{% endif %}); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100%; height: 150px;"></div>
+                            <div class="card {% if item.upload_result == 'upload' %}bg-success{% elif item.upload_result == 'error' %}bg-danger{% elif item.upload_result == 'ignore' %}bg-secondary{% endif %}">
+                                <!-- <div style="background: #22D2D2 {% if item.image %}url({{ item.image.url }}{% endif %}); background-size: cover; background-position: center; background-repeat: no-repeat; width: 100%; height: 150px;"></div> -->
                                 <div class="card-body">
                                     <h5 class="card-title">{{ item.caption }} <br> <strong>{{ item.price }}</strong></h5>
                                     <p class="card-text text-muted">{{item.sku }}</p>
                                     <p class="card-text">{{item.description | truncatechars:55 }}</p>
-
                                 </div>
                             </div>
                         </div>

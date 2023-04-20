@@ -34,10 +34,7 @@ class ImportItemsCSVForm(forms.Form):
     )
 
     on_duplicate = forms.ChoiceField(choices=ON_DUPLICATE_CHOICES, widget=forms.Select())
-    # replace_duplicate = forms.BooleanField(required=False)
-    single_transaction = forms.BooleanField(required=False)
     on_duplicate.widget.attrs.update({"title": "Action on duplicate caption"})
-    single_transaction.widget.attrs.update({"checked":  True, "title": "rollback on any errors."})
 
     def clean_csv_file(self):
         csv_file = self.cleaned_data['csv_file']
