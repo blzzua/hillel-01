@@ -1,6 +1,7 @@
 # from django.http import HttpResponse
 import csv
 import logging
+import contextlib
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -9,6 +10,7 @@ from items.models import Item
 from django.contrib import messages
 from django.views.generic import ListView, View
 from django.core.paginator import Paginator
+from django.db import DatabaseError, transaction
 
 
 class ItemsListView(ListView):
@@ -58,6 +60,7 @@ class ImportItemsListView(View):
             errors = []
             on_duplicate = form.cleaned_data['on_duplicate']
             saved_items = []
+            ctx_mgr = transaction.atomic() if form.cleaned_data['single_transaction'] else contextlib.nullcontext()
             for row in dict_reader:
                 if Item.objects.filter(caption=row['caption']).exists():
                     logging.error(f'update {row["caption"]} with {on_duplicate=}')
