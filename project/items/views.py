@@ -1,10 +1,7 @@
 # from django.http import HttpResponse
 import csv
-import logging
 
-import contextlib
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
@@ -14,9 +11,9 @@ from items.models import Item
 from django.contrib import messages
 from django.views.generic import ListView, View
 from django.core.paginator import Paginator
-from django.db import DatabaseError, transaction
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+
 
 class ItemsListView(ListView):
     model = Item
@@ -58,7 +55,6 @@ class ImportItemsListView(View):
     def post(self, request, *args):
         form = ImportItemsCSVForm(request.POST, request.FILES)
         if form.is_valid():
-            logging.warning(f'form is valid')
             csv_file = request.FILES['csv_file']
             decoded_file = csv_file.read().decode('utf-8').splitlines()
             dict_reader = csv.DictReader(decoded_file)
@@ -82,9 +78,8 @@ class ImportItemsListView(View):
                             item.upload_result = 'ignore'
                             upload_items.append(item)
                     else:
-                        logging.warning(f'insert {row["caption"]} with {on_duplicate=}')
                         item = Item.objects.create(caption=row['caption'], sku=row['sku'], price=row['price'],
-                                               is_active=row['is_active'], description=row['description'])
+                                                   is_active=row['is_active'], description=row['description'])
                         item.upload_result = 'upload'
                         upload_items.append(item)
                 except ValidationError:
@@ -96,6 +91,7 @@ class ImportItemsListView(View):
 
         else:  # not form.is_valid():
             return render(request, 'items/import_csv.html', context={'form': form})
+
 
 @method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
 class ExportItemsListView(View):
@@ -120,5 +116,3 @@ class ExportItemsListView(View):
                 }
             )
         return response
-
-

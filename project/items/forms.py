@@ -22,9 +22,6 @@ class ItemCreateForm(forms.ModelForm):
         return price
 
 
-
-
-
 class ImportItemsCSVForm(forms.Form):
     csv_file = forms.FileField()
     ON_DUPLICATE_CHOICES = (
