@@ -30,11 +30,11 @@ class ImportItemsCSVForm(forms.Form):
     ON_DUPLICATE_CHOICES = (
         ('update', 'UPDATE'),
         ('ignore', 'IGNORE'),
-        ('abort', 'ABORT'),
     )
 
     on_duplicate = forms.ChoiceField(choices=ON_DUPLICATE_CHOICES, widget=forms.Select())
-    on_duplicate.widget.attrs.update({"title": "Action on duplicate caption"})
+    on_duplicate.widget.attrs.update({"title": "Update or ignore"})
+    on_duplicate.label = "On duplicate caption"
 
     def clean_csv_file(self):
         csv_file = self.cleaned_data['csv_file']

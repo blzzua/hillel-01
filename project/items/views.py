@@ -1,8 +1,11 @@
 # from django.http import HttpResponse
 import csv
 import logging
-import contextlib
 
+import contextlib
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy, reverse
+from django.utils.decorators import method_decorator
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -12,7 +15,8 @@ from django.contrib import messages
 from django.views.generic import ListView, View
 from django.core.paginator import Paginator
 from django.db import DatabaseError, transaction
-
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 
 class ItemsListView(ListView):
     model = Item
@@ -43,19 +47,19 @@ class MainPage(ItemsListView):
     template_name = 'products_index.html'
 
 
+@method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
 class ImportItemsListView(View):
-
     def get(self, request, *args, **kwargs):
         form = ImportItemsCSVForm()
         saved_items = []
         return render(request, 'items/import_csv.html', {'form': form, 'saved_items': saved_items})
 
+    @method_decorator(staff_member_required(login_url=reverse_lazy('accounts_login')))
     def post(self, request, *args):
         form = ImportItemsCSVForm(request.POST, request.FILES)
         if form.is_valid():
             logging.warning(f'form is valid')
             csv_file = request.FILES['csv_file']
-            # TODO implement single-transaction .
             decoded_file = csv_file.read().decode('utf-8').splitlines()
             dict_reader = csv.DictReader(decoded_file)
             on_duplicate = form.cleaned_data['on_duplicate']
@@ -63,7 +67,6 @@ class ImportItemsListView(View):
             for row in dict_reader:
                 try:
                     if Item.objects.filter(caption=row['caption']).exists():
-                        logging.error(f'update {row["caption"]} with {on_duplicate=}')
                         if on_duplicate == 'update':
                             # item = Item.objects.filter(caption=row['caption']).first()
                             item_qs = Item.objects.filter(caption=row['caption'])
@@ -85,16 +88,16 @@ class ImportItemsListView(View):
                         item.upload_result = 'upload'
                         upload_items.append(item)
                 except ValidationError:
-                    item = row
+                    item = dict(row)
                     item['upload_result'] = 'error'
                     upload_items.append(item)
 
             return render(request, 'items/import_csv.html', context={'form': form, 'upload_items': upload_items, }, )
 
-        else: # not form.is_valid():
+        else:  # not form.is_valid():
             return render(request, 'items/import_csv.html', context={'form': form})
 
-
+@method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
 class ExportItemsListView(View):
     def get(self, request, *args, **kwargs):
         headers = {
@@ -117,3 +120,5 @@ class ExportItemsListView(View):
                 }
             )
         return response
+
+
