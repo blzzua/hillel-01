@@ -17,24 +17,12 @@ class Order(models.Model):
     # user_name = models.CharField(max_length=255, null=True, on_delete=models.SET_NULL)
     user_name = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     order_number = models.IntegerField()
-    total_price = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    total_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('user_name', 'order_number')
-
-    def calculate_total_price(self):
-        total_price = 0
-        for item in OrderItem.objects.filter(order_id=self).all():
-            total_price += item.discount_price
-        return total_price
-
-    def calculate_total_price2(self):
-        total_price = 0
-        for item in self.order_items.iterator():
-            total_price += item.discount_price
-        return total_price
 
     # def save(self, *args, **kwargs):
     #     # donot  check if
@@ -49,15 +37,18 @@ class OrderItem(models.Model):
     order_id = models.ForeignKey(Order, on_delete=models.DO_NOTHING, related_name='order_items', )
     item_id = models.ForeignKey(Item, on_delete=models.DO_NOTHING)
     discount_id = models.ForeignKey(Discount, on_delete=models.DO_NOTHING, blank=True, null=True, default=None)
+    discount_amount = models.DecimalField(max_digits=18, decimal_places=2, blank=True, default=0)
     item_price = models.DecimalField(max_digits=18, decimal_places=2)
     quantity = models.SmallIntegerField(default=1)  # TODO: add checks, positive > 0.
-    discount_price = models.DecimalField(max_digits=18, decimal_places=2, blank=True)
+    amount = models.DecimalField(max_digits=18, decimal_places=2, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
-        self.discount_price = self.item_price * self.quantity
+        #self.calculate_amount()
         super(OrderItem, self).save(*args, **kwargs)
-    #
-    # def calculate_price_with_discount(self):
-    #     return self.discount_id.calculate(self.item_price * self.quantity)
+
+    #def calculate_amount(self):
+    #    self.amount = int(self.quantity) * self.item_price - (self.discount_amount if self.discount_amount else 0)
+
+

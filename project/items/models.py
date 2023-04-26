@@ -81,12 +81,4 @@ class Discount(models.Model):
     def __str__(self):
         return self.code
 
-    def calculate(self, price):
-        if not self.is_active:
-            return price
-        else:
-            if self.discount_type == Discount.DiscountType.ABS.value:
-                return max(MIN_PRICE, price - self.amount)
-            if self.discount_type == Discount.DiscountType.PCT.value:
-                return max(MIN_PRICE, price * (100 - self.amount) / 100)
 
