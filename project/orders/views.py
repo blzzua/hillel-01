@@ -56,6 +56,10 @@ class OrderItemView(View):
 
 
 class OrderDetailView(View):
+    # implement buttons in detail.html
+    #  TODO /order/clear">Clear Order</button>
+    #  TODO /order/confirm">Confirm Order</button>
+
     def get(self, request):
         user = request.user
         order, is_created = Order.objects.get_or_create(user_name=user, is_active=True, defaults={'order_number': 1, 'is_active': True, 'is_paid': False, 'is_active':True})
@@ -77,6 +81,8 @@ class OrderItemDetailView(DetailView):
 
     def get_object(self, queryset=None):
         return OrderItem.objects.get(id=self.kwargs['orderitem_id'])
+
+    # TODO ./project/templates/order/orderitem_detail.html:    <button type="submit" class="btn btn-primary" formaction="#TODO">Confirm Changes Order </button>
 
 class OrderItemDeletelView(View):
     def post(self, request, *args, **kwargs):
