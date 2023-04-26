@@ -55,9 +55,9 @@ class OrderItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # def save(self, *args, **kwargs):
-    #     self.discount_price = self.calculate_price_with_discount()
-    #     super(OrderItem, self).save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        self.discount_price = self.item_price * self.quantity
+        super(OrderItem, self).save(*args, **kwargs)
     #
     # def calculate_price_with_discount(self):
     #     return self.discount_id.calculate(self.item_price * self.quantity)

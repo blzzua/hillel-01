@@ -6,13 +6,13 @@
     <form method="post" action="">
         {% csrf_token %}
         <div class="card" style="width: 100%;">
-                <div class="card-header">Order header {{item.caption}}</div>
+                <div class="card-header">Order {{item.caption}}</div>
                 <div class="row">
                     <div class="col col-md-6 d-flex justify-content-center align-items-center">
                         <img src="{{item.image.url}}">
                    </div>
                     <div class="col col-md-6 card-text">
-                        <p> інформація про заказ {{order.order_number}} для {{order.user_name}}</p>
+                        <p> інформація про замовлення {{order.order_number}} для {{order.user_name}}</p>
                         <ul>
                             <li>is_active: {{order.is_active}}</li>
                             <li>total_price: {{order.total_price}}</li>
@@ -28,13 +28,13 @@
                         </ul>
                         <input hidden name="order_number" value="{{order.order_number}}" >
 
-                        <button type="submit" class="btn btn-primary" formaction="/order/add?item={{item.id}}">Order</button>
-
+                        <button class="btn btn-light" onclick="history.back()">Cancel</button>
+                        <button type="submit" class="btn btn-success" formaction="/order/add?item={{item.id}}">Order</button>
                    </div>
                 </div>
-
+        <a href="{% url 'order_detail' %}" class="btn btn-link"> Go to Order Details</a>
         </div>
-    <button type="submit" class="btn btn-primary" formaction="/order/confirm">Confirm Order</button>
+
     </form>
     </div>
 </div>

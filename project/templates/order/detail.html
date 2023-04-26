@@ -5,11 +5,11 @@
     <div class="col col-md-6">
     <form method="post" action="">
         {% csrf_token %}
-        <div class="card" style="width: 100%;">
-                <div class="card-header">Order header {{order.order_number}}</div>
-                <div class="row">
+        <div class="card pb-3">
+                <div class="card-header">Order {{order.order_number}} для {{order.user_name}}</div>
+                <div class="row px-3 mt-4">
                     <div class="col col-md-6 card-text">
-                        <p> інформація про заказ {{order.order_number}} для {{order.user_name}}</p>
+                        <p> Iнформація про замовлення {{order.order_number}} </p>
                         <ul>
                             <li>is_active: {{order.is_active}}</li>
                             <li>total_price: {{order.total_price}}</li>
@@ -17,17 +17,22 @@
                         <input hidden name="order_number" value="{{order.order_number}}" >
                     </div>
                    <div class="col col-md-6 ">
-                       <p>інформація про товари в заказі:</p>
+                       <p>інформація про товари в замовленні:</p>
                         <ul class="list-group">
-                            {% for item in orderitems %}
-                            <li>{{item.item_id.caption}}  {{item.item_price}} x {{item.quantity}} </li>
+                            {% for orderitem in orderitems %}
+                            <li><a href="item/{{orderitem.id}}/detail">{{orderitem.item_id.caption}}  {{orderitem.item_price}} x {{orderitem.quantity}} </a></li>
                             {% endfor %}
                         </ul>
 
                    </div>
                    </div>
                 </div>
-    <button type="submit" class="btn btn-primary" formaction="/order/confirm">Confirm Order</button>
+    <div class="row d-flex justify-content-center align-items-center mt-3">
+        <div class="col col-xl-4">
+            <button type="submit" class="btn btn-danger" formaction="#TODO/order/clear">Clear Order</button>
+            <button type="submit" class="btn btn-success" formaction="#TODO/order/confirm">Confirm Order</button>
+        </div>
+    </div>
     </form>
     </div>
 </div>
