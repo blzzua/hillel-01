@@ -25,6 +25,7 @@ urlpatterns = [
     # path('', ItemsListView.as_view(), name='items_list'),
     path('', MainPage.as_view(), name='main_page'),
     path('items/', include('items.urls')),
+    path('order/', include('orders.urls')),
     path('accounts/', include('accounts.urls')),
     path('feedback/', include('feedback.urls')),
     path('import/items', ImportItemsListView.as_view(), name='import_items_csv'),

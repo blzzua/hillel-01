@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django_admin_listfilter_dropdown',
     'django_bootstrap5',
     'items',
+    'orders',
     'feedback'
 ]
 

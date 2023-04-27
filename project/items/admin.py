@@ -1,16 +1,10 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Item, Category, Discount, Order, OrderItem
+from .models import Item, Category, Discount
 # admin.site.register(Item)
 
 admin.site.register(Discount)
-admin.site.register(Order)
-
-
-@admin.register(OrderItem)
-class AdminOrderItem(admin.ModelAdmin):
-    pass
 
 
 class ItemsInLine(admin.StackedInline):
