@@ -2,9 +2,7 @@ import uuid
 
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.db import models
 from items.models import Item, Discount
-from django.utils.safestring import mark_safe
 
 User = get_user_model()
 MIN_PRICE = 0.1
@@ -43,12 +41,3 @@ class OrderItem(models.Model):
     amount = models.DecimalField(max_digits=18, decimal_places=2, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def save(self, *args, **kwargs):
-        #self.calculate_amount()
-        super(OrderItem, self).save(*args, **kwargs)
-
-    #def calculate_amount(self):
-    #    self.amount = int(self.quantity) * self.item_price - (self.discount_amount if self.discount_amount else 0)
-
-

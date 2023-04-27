@@ -1,6 +1,5 @@
 import logging
-from django.core.signals import request_started
-from django.db.models.signals import post_save, post_delete, pre_save, pre_delete
+from django.db.models.signals import post_save, post_delete, pre_save
 from orders.models import Order, OrderItem
 from items.models import Discount
 from django.dispatch import receiver
@@ -27,9 +26,6 @@ def post_save_orderitem_signal(*args, **kwargs):
 
 @receiver(pre_save, sender=OrderItem)
 def pre_save_discount_orderitem_signal(*args, **kwargs):
-    # calculate discount
-    # at end
-
     orderitem = kwargs.get('instance')
     orderitem.amount = int(orderitem.quantity) * orderitem.item_price
 

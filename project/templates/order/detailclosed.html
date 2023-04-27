@@ -3,7 +3,6 @@
 {% block content %}
 <div class="row d-flex justify-content-center align-items-center">
     <div class="col col-md-6">
-    <form method="post" action="">
         {% csrf_token %}
         <div class="card pb-3">
                 <div class="card-header">Order {{order.order_number}} для {{order.user_name}}</div>
@@ -12,6 +11,7 @@
                         <p> Iнформація про замовлення {{order.order_number}} </p>
                         <ul>
                             <li>is_active: {{order.is_active}}</li>
+                            <li>is_paid: {{order.is_paid}}</li>
                             <li>total_amount: {{order.total_amount}}</li>
                         </ul>
                         <input hidden name="order_number" value="{{order.order_number}}" >
@@ -29,11 +29,8 @@
                 </div>
     <div class="row d-flex justify-content-center align-items-center mt-3">
         <div class="col col-xl-4">
-            <button type="submit" class="btn btn-danger" formaction="{% url 'order_clear' %}">Clear Order</button>
-            <button type="submit" class="btn btn-success" formaction="{% url 'order_confirm' %}">Confirm Order</button>
         </div>
     </div>
-    </form>
     </div>
 </div>
 {% endblock content %}

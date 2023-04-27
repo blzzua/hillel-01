@@ -19,6 +19,11 @@ class ItemsListView(ListView):
     model = Item
     template_name = 'items/list.html'
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True)
+        return queryset
+
 
 class ItemCreateView(View):
     def get(self, request):
@@ -42,6 +47,11 @@ class MainPage(ItemsListView):
     paginate_by = 8
     paginator = Paginator
     template_name = 'products_index.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True)
+        return queryset
 
 
 @method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')

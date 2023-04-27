@@ -1,8 +1,8 @@
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, View, DetailView, DeleteView
-from django.views.generic.edit import ModelFormMixin
+from django.views.generic import ListView, View, DetailView
 
+from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import Http404
 from django.core.exceptions import ObjectDoesNotExist
@@ -10,11 +10,16 @@ from django.core.exceptions import ObjectDoesNotExist
 from items.models import Item
 from orders.models import Order, OrderItem
 
+
+@method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
 class OrderItemView(View):
     def get(self, request):
         # form = OrderCountView()
         user = request.user
-        order, is_created = Order.objects.get_or_create(user_name=user, is_active=True, defaults={'order_number': 1, 'is_active': True, 'is_paid': False, 'is_active':True})
+        order, is_created = Order.objects.get_or_create(
+            user_name=user, is_active=True,
+            defaults={'order_number': -1, 'is_active': True, 'is_paid': False, 'is_active': True}
+        )
         if is_created:
             prev_order = Order.objects.filter(user_name=user).order_by('-order_number').first()
             if prev_order:
@@ -26,8 +31,7 @@ class OrderItemView(View):
             item = Item.objects.get(pk=item_id)
         except ObjectDoesNotExist:
             # redirect 404
-            raise Http404(f"Товар {item_id} незнайдений")
-
+            raise Http404(f"Товар {item_id} не знайдено")
 
         context = {'item': item, 'order': order}
         return render(request, 'order/add.html', context=context)
@@ -40,7 +44,6 @@ class OrderItemView(View):
         item = Item.objects.get(id=item_id)
         user = request.user
         order = Order.objects.get(user_name=user, is_active=True, order_number=order_number)
-        context = {'item': item, 'order': order}
         order_item = OrderItem.objects.create(
             is_active=True,
             order_id=order,
@@ -51,11 +54,11 @@ class OrderItemView(View):
             discount_amount=0,
             amount=item.price
         )
-
+        order_item # no qa
         return redirect(reverse('order_detail'))
 
 
-
+@method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
 class OrderDetailView(View):
     # implement buttons in detail.html
     #  TODO /order/clear">Clear Order</button>
@@ -63,7 +66,10 @@ class OrderDetailView(View):
 
     def get(self, request):
         user = request.user
-        order, is_created = Order.objects.get_or_create(user_name=user, is_active=True, defaults={'order_number': 1, 'is_active': True, 'is_paid': False, 'is_active':True})
+        order, is_created = Order.objects.get_or_create(
+            user_name=user, is_active=True,
+            defaults={'order_number': 1, 'is_active': True, 'is_paid': False, 'is_active': True}
+        )
         if is_created:
             prev_order = Order.objects.filter(user_name=user).order_by('-order_number').first()
             if prev_order:
@@ -75,6 +81,8 @@ class OrderDetailView(View):
 
         return render(request, 'order/detail.html', context=context)
 
+
+@method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
 class OrderItemDetailView(DetailView):
     model = OrderItem
     template_name = 'order/orderitem_detail.html'
@@ -85,8 +93,58 @@ class OrderItemDetailView(DetailView):
 
     # TODO ./project/templates/order/orderitem_detail.html:    <button type="submit" class="btn btn-primary" formaction="#TODO">Confirm Changes Order </button>
 
+
 class OrderItemDeletelView(View):
     def post(self, request, *args, **kwargs):
         order_item = OrderItem.objects.get(id=self.kwargs['orderitem_id'])
         order_item.delete()
         return redirect(reverse('order_detail'))
+
+
+@method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
+class OrderClearView(View):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        order = Order.objects.get(user_name=user, is_active=True)
+        for order_item in order.order_items.iterator():
+            order_item.delete()
+        return redirect(reverse('order_detail'))
+
+
+@method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
+class OrderConfirmView(View):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        order = Order.objects.get(user_name=user, is_active=True)
+        order.is_paid = True
+        order.is_active = False
+        order.save()
+        return redirect('order_detail_closed', order_id=order.id)
+
+
+@method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
+class OrderClosedDetailView(View):
+    def get(self, request, *args, **kwargs):
+        order_id = kwargs.get('order_id')
+        # TODO check and show only user's orders
+        # user = request.user
+        order = Order.objects.get(id=order_id)
+        orderitems = [item for item in order.order_items.all()]
+        context = {'order': order, 'orderitems': orderitems}
+
+        return render(request, 'order/detailclosed.html', context=context)
+
+
+class OrderListView(ListView):
+    model = Order
+    template_name = 'order/list.html'
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(user_name=request.user)
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset(request)
+        context = self.get_context_data()
+        return self.render_to_response(context)
