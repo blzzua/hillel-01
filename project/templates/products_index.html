@@ -29,7 +29,7 @@
 						<div class="card-body">
 							<h5 class="card-title">{{ product.caption }} - <strong>{{ product.price }}</strong></h5>
 							<p class="card-text">{{product.description | truncatechars:55 }}</p>
-							<a  href="#" class="btn btn-primary">Order</a>
+							<a  href="{% url 'add_orderitem' %}?item={{product.id}}" class="btn btn-primary">Order</a>
 						</div>
 					</div>
 				</div>

@@ -7,9 +7,8 @@
         {% csrf_token %}
         <div class="card" style="width: 100%;">
                 <div class="card-header">Order {{item.caption}}</div>
-                <div class="row">
-                    <div class="col col-md-6 d-flex justify-content-center align-items-center">
-                        <img src="{{item.image.url}}">
+                <div class="row mx-0">
+                    <div class="col col-md-6 d-flex justify-content-center align-items-center" style="background: #D2D2D2 {% if item.image %}url({{ item.image.url }}{% endif %}); background-size: cover; background-position: center; background-repeat: no-repeat; width: 50%; height: 480px;">
                    </div>
                     <div class="col col-md-6 card-text">
                         <p> інформація про замовлення {{order.order_number}} для {{order.user_name}}</p>
