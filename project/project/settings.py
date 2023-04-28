@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'items',
     'orders',
-    'feedback'
+    'feedback',
+    'favorites',
 ]
 
 MIDDLEWARE = [

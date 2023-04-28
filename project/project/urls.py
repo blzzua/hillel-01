@@ -28,6 +28,7 @@ urlpatterns = [
     path('order/', include('orders.urls')),
     path('accounts/', include('accounts.urls')),
     path('feedback/', include('feedback.urls')),
+    path('favorites/', include('favorites.urls')),
     path('import/items', ImportItemsListView.as_view(), name='import_items_csv'),
     path('export/items.csv', ExportItemsListView.as_view(), name='export_items_csv'),
 
