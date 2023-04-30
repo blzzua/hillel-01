@@ -17,11 +17,12 @@
 						<div class="card-body">
 							<h5 class="card-title">{{ product.caption }} - <strong>{{ product.price }}</strong></h5>
 							<p class="card-text">{{product.description | truncatechars:55 }}</p>
-							<a  href="{% url 'add_orderitem' %}?item={{product.id}}" class="btn btn-primary">Order</a>
-							{% csrf_token %}
-							<button class="btn btn-primary" onclick="sendAddToFavorites('{{product.id}}', '{{ csrf_token }}')">add to favorite</button>
-							</form>
-
+							{% if request.user.is_authenticated %}
+								<a  href="{% url 'add_orderitem' %}?item={{product.id}}" class="btn btn-primary">Order</a>
+								{% csrf_token %}
+								<button class="btn btn-primary" onclick="sendAddToFavorites('{{product.id}}', '{{ csrf_token }}')">add to favorite</button>
+								</form>
+							{% endif %}
 						</div>
 					</div>
 				</div>
