@@ -5,3 +5,5 @@ python-dotenv
 Pillow
 django-bootstrap5==23.1
 django-extensions==3.2.1
+celery[redis]==5.2.7
+requests==2.29.0
