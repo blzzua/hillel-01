@@ -4,3 +4,4 @@ django-admin-list-filter-dropdown
 python-dotenv
 Pillow
 django-bootstrap5==23.1
+django-extensions==3.2.1

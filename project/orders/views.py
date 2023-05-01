@@ -54,7 +54,7 @@ class OrderItemView(View):
             discount_amount=0,
             amount=item.price
         )
-        order_item # no qa
+        order_item
         return redirect(reverse('order_detail'))
 
 

@@ -31,7 +31,6 @@ DEBUG = int(os.environ.get("DEBUG", default=0))
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,7 +42,8 @@ INSTALLED_APPS = [
     'django_bootstrap5',
     'items',
     'orders',
-    'feedback'
+    'feedback',
+    'favorites',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +141,4 @@ STATICFILES_DIRS = ['assets']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+INSTALLED_APPS.append('django_extensions')
