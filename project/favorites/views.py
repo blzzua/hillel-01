@@ -1,19 +1,18 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
-from django.views import View
 from django.views.generic import FormView, ListView
+from django.http import HttpResponseNotAllowed, HttpResponse
 
 from favorites.models import FavoriteItem
 from favorites.forms import AddToFavoritesForm, RemoveFromFavoritesForm
-from django.http import HttpResponseNotAllowed, HttpResponse
 
 User = get_user_model()
 
-# Create your views here.
 
 class AddToFavoritesView(FormView):
     model = FavoriteItem
     form_class = AddToFavoritesForm
+
     def post(self, request):
         form = AddToFavoritesForm(request.POST)
         if form.is_valid():
@@ -21,9 +20,9 @@ class AddToFavoritesView(FormView):
             user = request.user
             favorite_item, action = FavoriteItem.objects.get_or_create(user_id=user, item_id=item_id)
             if action:
-                return HttpResponse(f'Item added', 200)
+                return HttpResponse('Item added', 200)
             else:
-                return HttpResponse(f'Item already added', 200)
+                return HttpResponse('Item already added', 200)
         else:
             return HttpResponse('Bad Request', status=400)
 
@@ -33,6 +32,7 @@ class AddToFavoritesView(FormView):
 
 class RemoveFromFavoritesView(FormView):
     model = RemoveFromFavoritesForm
+
     def post(self, request):
         form = RemoveFromFavoritesForm(request.POST, session=request)
         if form.is_valid():

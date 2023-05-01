@@ -1,8 +1,9 @@
 from django import forms
-from .models import FavoriteItem
 from favorites.models import FavoriteItem
 
+
 class AddToFavoritesForm(forms.ModelForm):
+
     class Meta:
         model = FavoriteItem
         fields = ('item_id',)
