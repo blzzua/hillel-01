@@ -10,6 +10,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from items.models import Item
 from orders.models import Order, OrderItem
 
+from project.celery import alert_order_task
+
 
 @method_decorator(login_required(login_url=reverse_lazy('accounts_login')), name='dispatch')
 class OrderItemView(View):
@@ -119,6 +121,7 @@ class OrderConfirmView(View):
         order.is_paid = True
         order.is_active = False
         order.save()
+        alert_order_task.delay(order_id=order.id)
         return redirect('order_detail_closed', order_id=order.id)
 
 
