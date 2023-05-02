@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'orders',
     'feedback',
     'favorites',
+    'currencies',
 ]
 
 MIDDLEWARE = [
