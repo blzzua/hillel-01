@@ -8,17 +8,21 @@ from decimal import Decimal
 class NBUData(APIBaseClient):
     base_url = 'https://bank.gov.ua/NBU_Exchange/exchange'
 
-    def _prepare_data(self) -> list:
+    def _prepare_data(self) -> None:
         """
-        :return: сщк
+        [
+            {"StartDate":"03.05.2023","TimeSign":"0000","CurrencyCode":"036","CurrencyCodeL":"AUD","Units":1,"Amount":24.5046 },
+            ...
+        ]
+        :return: None, change state self.response_object
         """
         self._request('get', params={'json': ''})
-        print(self.response)
+        logging.info(f'Gathering from bank.gov.ua - {self.response.status_code}')
         if self.response.status_code == 200:
             self.response_object = self.response.json()
 
         else:
-            print('error', self.response.status_code)
+            logging.error(f'Error on access to NBU: {self.response.status_code}')
             raise ValueError(f'Wrong response {self.response.json()}')
 
     def save(self):

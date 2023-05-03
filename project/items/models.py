@@ -5,6 +5,8 @@ from django.db import models
 from os import path
 
 from django.utils.safestring import mark_safe
+from currencies.models import Currency
+from decimal import Decimal
 
 User = get_user_model()
 MIN_PRICE = 0.1
@@ -63,6 +65,26 @@ class Item(models.Model):
 
     img_preview.short_description = 'Image'
     img_preview.allow_tags = True
+
+    @property
+    def price_as_DOGE(self):
+        doge_ccy = Currency.objects.get(code='DOGE')
+        return Decimal(self.price / doge_ccy.amount)
+
+    @property
+    def price_as_UAH(self):
+        ccy = Currency.objects.get(code='UAH')
+        return round(Decimal(self.price / ccy.amount),5)
+
+    @property
+    def price_as_USD(self):
+        ccy = Currency.objects.get(code='USD')
+        return round(Decimal(self.price / ccy.amount),5)
+
+    @property
+    def price_as_EUR(self):
+        ccy = Currency.objects.get(code='EUR')
+        return round(Decimal(self.price / ccy.amount),5)
 
 
 class Discount(models.Model):

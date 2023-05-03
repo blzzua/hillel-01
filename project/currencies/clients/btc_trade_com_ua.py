@@ -8,7 +8,7 @@ from decimal import Decimal
 class DogePrice(APIBaseClient):
     base_url = 'https://btc-trade.com.ua/api/ticker/doge_uah'
 
-    def _prepare_data(self) -> list:
+    def _prepare_data(self) -> None:
         """
             {
               "doge_uah": {
@@ -32,10 +32,10 @@ class DogePrice(APIBaseClient):
               }
             }
 
-        :return: сщк
+        :return: int
         """
         self._request('get')
-        print(self.response)
+        logging.info(f'Gathering from btc-trade.com.ua - {self.response.status_code}')
         if self.response.status_code == 200:
             response_object = self.response.json()
             sell = Decimal(response_object.get('doge_uah').get('sell'))
@@ -43,7 +43,7 @@ class DogePrice(APIBaseClient):
             self.cross = (sell + buy) / 2
 
         else:
-            print('error', self.response.status_code)
+            logging.error(f'Error on access to btc-trade.com.ua: {self.response.status_code}')
             raise ValueError(f'Wrong response {self.response.json()}')
 
     def save(self):
