@@ -145,9 +145,14 @@ INSTALLED_APPS.append('django_extensions')
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-        "LOCATION": "unique-snowflake",
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": "/tmp/django_cache/default",
         "TIMEOUT": 600,
+        "OPTIONS": {"MAX_ENTRIES": 10},
+    },
+    "feedback": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": "/tmp/django_cache/feedback",
         "OPTIONS": {"MAX_ENTRIES": 10},
     }
 }
