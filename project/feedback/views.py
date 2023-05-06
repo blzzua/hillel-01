@@ -10,9 +10,8 @@ from django.views import View
 
 from feedback.forms import FeedbackForm
 from feedback.models import Feedback
+from django.views.decorators.cache import cache_page
 
-
-# Create your views here
 class FeedbackView(View):
     @method_decorator(login_required(login_url=reverse_lazy('accounts_login')))
     def post(self, request):
@@ -36,3 +35,8 @@ class FeedbackListView(ListView):
 
     def get_queryset(self):
         return super().get_queryset().order_by('-created_at')
+
+    @method_decorator(cache_page(60, cache="default"))
+    def get(self, *args, **kwargs):
+        print("page was created")
+        return super().get(*args, **kwargs)

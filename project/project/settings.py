@@ -142,3 +142,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 INSTALLED_APPS.append('django_extensions')
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "unique-snowflake",
+        "TIMEOUT": 600,
+        "OPTIONS": {"MAX_ENTRIES": 10},
+    }
+}
