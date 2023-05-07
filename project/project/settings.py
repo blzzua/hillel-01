@@ -38,12 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #  external packages
     'django_admin_listfilter_dropdown',
     'django_bootstrap5',
+    'django_celery_beat',
+    'django_celery_results',
+    #  internal packages
     'items',
     'orders',
     'feedback',
     'favorites',
+    'currencies',
 ]
 
 MIDDLEWARE = [
@@ -155,4 +160,12 @@ CACHES = {
         "LOCATION": "/tmp/django_cache/feedback",
         "OPTIONS": {"MAX_ENTRIES": 10},
     }
+}
+
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    'get_currencies_task': {
+        'task': 'currencies.tasks.get_currencies_task',
+        'schedule': crontab(hour='*', minute='*', day_of_week='*'),
+    },
 }
