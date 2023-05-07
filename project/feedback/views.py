@@ -1,3 +1,5 @@
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.paginator import Paginator
@@ -12,6 +14,12 @@ from feedback.forms import FeedbackForm
 from feedback.models import Feedback
 from django.views.decorators.cache import cache_page
 from django.core.cache import caches
+from project.constants import CACHE_KEY
+
+# from django.core.cache import cache
+cache = caches['feedback']
+
+
 
 class FeedbackView(View):
     @method_decorator(login_required(login_url=reverse_lazy('accounts_login')))
@@ -19,8 +27,7 @@ class FeedbackView(View):
         form = FeedbackForm(data=request.POST)
         if form.is_valid():
             form.save(fill_name=request.user.username)
-            feedback_cache = caches['feedback']
-            feedback_cache.clear()
+            cache.clear()
             return redirect(reverse('feedback_list'))
         else:
             return render(request, 'feedback/feedback_index.html', context={'form': form})
@@ -37,9 +44,12 @@ class FeedbackListView(ListView):
     template_name = 'feedback/list.html'
 
     def get_queryset(self):
-        return super().get_queryset().order_by('-created_at')
+        qs = cache.get(CACHE_KEY['feedback'])
+        if not qs:
+            logging.warning("cache miss: feedback")
+            qs = super().get_queryset().order_by('-created_at')
+            cache.set(CACHE_KEY['feedback'], qs)
+        return qs
 
-    @method_decorator(cache_page(60, cache="feedback", key_prefix="feedback"))
     def get(self, *args, **kwargs):
-        print("page was created")
         return super().get(*args, **kwargs)
