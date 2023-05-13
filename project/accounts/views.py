@@ -22,7 +22,7 @@ class LoginView(FormView):
         form = LoginForm(request.POST)
         if form.is_valid():
             user = authenticate(
-                request, username=form.cleaned_data.get('username'),
+                request, email=form.cleaned_data.get('email'),
                 password=form.cleaned_data.get('password')
             )
             if user:
@@ -67,8 +67,8 @@ class AccountsIndexView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user'] = {f.name: getattr(self.request.user, f.name, None) for f in User._meta.get_fields()
-                           if f.name in ("id", "username", "last_login", "is_superuser", "first_name", "last_name",
-                                         "email", "is_staff", "is_active", "date_joined")}
+                           if f.name in ("id", "last_login", "is_superuser", "first_name", "last_name",
+                                         "email", "phone", "is_staff", "is_active", "date_joined")}
         return context
 
 

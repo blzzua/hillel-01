@@ -9,15 +9,15 @@ User = get_user_model()
 class LoginForm(models.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['email', 'password']
 
-    username = CharField(label='Login', widget=TextInput(attrs={"autofocus": True}))
+    email = CharField(label='email', widget=TextInput(attrs={"autofocus": True}))
     password = CharField(label='Password', widget=PasswordInput(attrs={"type": "password"}))
 
     def clean(self):
-        username = self.data.get('username')
+        email = self.data.get('email')
         password = self.data.get('password')
-        self.cleaned_data = {'username': username, 'password': password}
+        self.cleaned_data = {'email': email, 'password': password}
         return self.cleaned_data
 
 
@@ -29,7 +29,7 @@ class RegistrationForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         print(self)
-        user.username = self.cleaned_data.get('email').split('@')[0]
+        user.email = self.cleaned_data.get('email').split('@')[0]
         user.save()
         return user
 
