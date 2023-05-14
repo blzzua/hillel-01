@@ -5,6 +5,9 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password
 
+from django.core.cache import caches
+otp_storage = caches['otp']
+
 
 class UserManager(OrigAuthUserManager):
     def _create_user(self, email, password, **extra_fields):
@@ -81,4 +84,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def check_optpassword(self, password):
-        return password == '1234'
+        if self.phone and password:
+            return password == otp_storage.get(key=self.phone)
+        else:
+            return False

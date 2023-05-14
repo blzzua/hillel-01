@@ -29,6 +29,17 @@
 <script>
 function send_OTP(csrf_token, button) {
   event.preventDefault();
+  var emailInput = document.getElementById("id_email");
+  var phone_number = emailInput.value;
+  var pattern = /^\+?(?:38)?0\d{9}$/;
+  if (!pattern.test(phone_number)) {
+    emailInput.classList.add("is-invalid");
+    return;
+  }
+  else{
+    emailInput.remove("is-invalid");
+  }
+
   var xhr = new XMLHttpRequest();
   xhr.open("POST", "/accounts/send_otp", true);
 
@@ -39,21 +50,22 @@ function send_OTP(csrf_token, button) {
       console.log(xhr.responseText);
     }
   };
-  var phone_number = document.getElementById("id_email").value;
   var params = "phone_number=" + phone_number;
   xhr.send(params);
 
   button.disabled = true;
   button.classList.remove("btn-primary");
   button.classList.add("btn-disabled");
+  document.getElementById("id_password").disabled = true;
+
   setTimeout(function(){
     button.textContent  = 'Send OTP again';
-  },5000);
+  },35000);
   setTimeout(function(){
     button.disabled = false;
     button.classList.remove("btn-disabled");
     button.classList.add("btn-primary");
-    }, 10000);
+    }, 60000);
 
 }
 </script>

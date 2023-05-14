@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.forms import models, Form, CharField, TextInput, PasswordInput, NumberInput
@@ -13,8 +14,11 @@ class LoginForm(Form):
 
     def clean_email(self):
         email = self.data.get('email')
-        if email.isdigit():
-            return email
+        phone_regex = re.match('^\+?(?:38)?(0\d{9})$', email)
+        if bool(phone_regex):
+            # valid phone number
+            phone = phone_regex.groups()[0]
+            return phone
 
     def clean(self):
         email = self.data.get('email')

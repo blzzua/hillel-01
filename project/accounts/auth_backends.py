@@ -1,4 +1,5 @@
 import logging
+import re
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
@@ -46,8 +47,11 @@ class EmailModelBackend(ModelBackend):
 class PhoneModelBackend(ModelBackend):
     @staticmethod
     def _validate_phonenumber(phone):
-        # TODO: implement validation
-        return True
+        # valid formats:
+        # +380501234567
+        # 380501234567
+        # 0501234567
+        return bool(re.match('^\+?(?:38)?0\d{9}$', phone))
 
     # user = UserModel._default_manager.get(phone=username)
     def authenticate(self, request, username=None, password=None, **kwargs):
