@@ -1,23 +1,34 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from django.forms import models, CharField, TextInput, PasswordInput
+from django.forms import models, Form, CharField, TextInput, PasswordInput, NumberInput
 
 
 User = get_user_model()
 
 
-class LoginForm(models.ModelForm):
-    class Meta:
-        model = User
-        fields = ['email', 'password']
+class LoginForm(Form):
+    email = CharField(label='email or phone', widget=TextInput(attrs={"autofocus": True}))
+    password = CharField(label='Password', widget=PasswordInput(attrs={"type": "password"}), required=False)
+    otp_password = CharField(label='SMS code', widget=NumberInput(attrs={}), required=False)
 
-    email = CharField(label='email', widget=TextInput(attrs={"autofocus": True}))
-    password = CharField(label='Password', widget=PasswordInput(attrs={"type": "password"}))
+    def clean_email(self):
+        email = self.data.get('email')
+        if email.isdigit():
+            return email
 
     def clean(self):
         email = self.data.get('email')
         password = self.data.get('password')
-        self.cleaned_data = {'email': email, 'password': password}
+        otp_password = self.data.get('otp_password')
+        self.cleaned_data = {'email': email}
+        if password != '':
+            self.cleaned_data['password'] = password
+        elif otp_password != '':
+            self.cleaned_data['password'] = otp_password
+        else:
+            self.add_error('password', 'Empty Password (and OTP)')
+            self.add_error('otp_password', 'Empty OTP (and Password)')
+            # raise ValidationError('Empty Password and OTP')
         return self.cleaned_data
 
 

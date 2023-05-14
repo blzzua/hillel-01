@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, RedirectView, FormView
 from django.views.generic.edit import FormMixin
 from django.contrib.auth import login, authenticate, logout
-# from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from accounts.forms import RegistrationForm, LoginForm
 from django.contrib.auth import get_user_model

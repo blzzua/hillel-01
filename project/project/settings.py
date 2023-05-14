@@ -171,3 +171,6 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(hour='*', minute='*', day_of_week='*'),
     },
 }
+
+# AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.EmailModelBackend', 'django.contrib.auth.backends.PhoneModelBackend', ]
+AUTHENTICATION_BACKENDS = ['accounts.auth_backends.EmailModelBackend', 'accounts.auth_backends.PhoneModelBackend']
