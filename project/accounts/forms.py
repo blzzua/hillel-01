@@ -49,3 +49,13 @@ class PersonalInformationForm(models.ModelForm):
     class Meta:
         model = User
         exclude = ['password']
+
+
+class OtpForm(Form):
+    phone_number = CharField()
+    def clean_email(self):
+        email = self.data.get('phone_number')
+        # TODO: implement cool phone number
+        if email.isdigit():
+            return email
+

@@ -1,13 +1,20 @@
 import logging
 
 from django.shortcuts import render, redirect
+from django.utils import cache
 from django.views.generic import TemplateView, RedirectView, FormView
 from django.views.generic.edit import FormMixin
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
-from accounts.forms import RegistrationForm, LoginForm
+from accounts.forms import RegistrationForm, LoginForm, OtpForm
 from django.contrib.auth import get_user_model
+from project.celery import send_otp
+from project.constants import OTP_LENGTH
+from random import randint
 User = get_user_model()
+
+from django.core.cache import caches
+otp_storage = caches['otp']
 
 
 # Create your views here.
@@ -77,3 +84,19 @@ class PersonalInformationView(AccountsIndexView):
             return super().get(*args, **kwargs)
         else:
             return redirect(reverse('accounts_login'))
+
+class SendOPTView(TemplateView, FormMixin):
+    template_name = 'accounts/login.html'
+    form_class = OtpForm
+    def post(self, request):
+        context = super().get_context_data()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            logging.warning(form.cleaned_data['phone_number'])
+            phone_number = form.cleaned_data['phone_number']
+            min_otp = 1
+            max_otp = (10 ** OTP_LENGTH) - 1
+            otp = str.zfill(str(randint(min_otp, max_otp)), OTP_LENGTH)
+            otp_storage.set(key=phone_number, value=otp, timeout=60)
+            send_otp.delay(phone_number=phone_number, otp=otp)
+        return render(request, template_name=self.get_template_names(), context=context)

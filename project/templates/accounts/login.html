@@ -15,8 +15,9 @@
                     {{ form.errors }}
                     {% csrf_token %}
                     {% bootstrap_form form %}
-                    {% bootstrap_button button_type="submit" content="Login" %}
-                    {% bootstrap_button button_type="reset" content="Cancel" %}
+                    {% bootstrap_button button_type="submit" content="Login" button_class="btn btn-success" %}
+                    {% bootstrap_button button_type="reset" content="Cancel" button_class="btn btn-danger" %}
+                    <button class="btn btn-primary" onclick="send_OTP('{{ csrf_token }}', this)">Send OTP</button>
                 </form>
             </div>
         </div>
@@ -25,6 +26,37 @@
     {% endfor %}
     </div>
 
+<script>
+function send_OTP(csrf_token, button) {
+  event.preventDefault();
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/accounts/send_otp", true);
+
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhr.setRequestHeader("X-CSRFToken", csrf_token);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      console.log(xhr.responseText);
+    }
+  };
+  var phone_number = document.getElementById("id_email").value;
+  var params = "phone_number=" + phone_number;
+  xhr.send(params);
+
+  button.disabled = true;
+  button.classList.remove("btn-primary");
+  button.classList.add("btn-disabled");
+  setTimeout(function(){
+    button.textContent  = 'Send OTP again';
+  },5000);
+  setTimeout(function(){
+    button.disabled = false;
+    button.classList.remove("btn-disabled");
+    button.classList.add("btn-primary");
+    }, 10000);
+
+}
+</script>
 
 {% endblock %}
 

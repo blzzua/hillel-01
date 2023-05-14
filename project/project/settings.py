@@ -161,7 +161,13 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
         "LOCATION": "/tmp/django_cache/feedback",
         "OPTIONS": {"MAX_ENTRIES": 10},
+    },
+    "otp": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get("CELERY_BROKER_URL"),
+
     }
+
 }
 
 from celery.schedules import crontab

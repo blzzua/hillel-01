@@ -51,3 +51,9 @@ def alert_order_task(self, order_id):
     else:
         message += '\n' + f'.. to long. {order_items_lines} items'
     send_to_telegram(message)
+
+
+@app.task(bind=True)
+def send_otp(self, phone_number, otp):
+    message = f"""Код для входу valheim food shop для {phone_number}: {otp}"""
+    send_to_telegram(message)
