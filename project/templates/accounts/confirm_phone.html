@@ -4,7 +4,7 @@
 {% block content %}
     <div class="jumbotron jumbotron-fluid text-center">
       <div class="container">
-        <h1 class="display-4">Login</h1>
+        <h1 class="display-4">Confirm phone</h1>
       </div>
     </div>
 
@@ -15,9 +15,9 @@
                     {{ form.errors }}
                     {% csrf_token %}
                     {% bootstrap_form form %}
-                    {% bootstrap_button button_type="submit" content="Login" button_class="btn btn-success" %}
-                    {% bootstrap_button button_type="reset" content="Cancel" button_class="btn btn-danger" %}
-                    <button class="btn btn-primary" onclick="send_OTP('{{ csrf_token }}', this)">Send OTP</button>
+                    <button class="btn btn-success" type="submit" id="id_submit_button" tabindex="4" disabled>Confirm</button>
+                    <button class="btn btn-danger" type="reset" tabindex="-1" >Cancel</button>
+                    <button class="btn btn-primary" onclick="send_OTP('{{ csrf_token }}', this)" tabindex="2">Send OTP</button>
                 </form>
             </div>
         </div>
@@ -29,7 +29,7 @@
 <script>
 function send_OTP(csrf_token, button) {
   event.preventDefault();
-  var emailInput = document.getElementById("id_email");
+  var emailInput = document.getElementById("id_phone_number");
   var phone_number = emailInput.value;
   var pattern = /^\+?(?:38)?0\d{9}$/;
   if (!pattern.test(phone_number)) {
@@ -38,6 +38,7 @@ function send_OTP(csrf_token, button) {
   }
   else{
     emailInput.classList.remove("is-invalid");
+    emailInput.classList.add("is-valid");
   }
 
   var xhr = new XMLHttpRequest();
@@ -53,10 +54,15 @@ function send_OTP(csrf_token, button) {
   var params = "phone_number=" + phone_number;
   xhr.send(params);
 
+  submit_button = document.getElementById("id_submit_button");
+  submit_button.disabled = false;
+  otp_input = document.getElementById("id_otp");
+  otp_input.disabled = false;
   button.disabled = true;
   button.classList.remove("btn-primary");
   button.classList.add("btn-disabled");
   document.getElementById("id_password").disabled = true;
+  otp_input.focus()
 
   setTimeout(function(){
     button.textContent  = 'Send OTP again';

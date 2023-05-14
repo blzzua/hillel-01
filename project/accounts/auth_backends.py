@@ -51,7 +51,7 @@ class PhoneModelBackend(ModelBackend):
         # +380501234567
         # 380501234567
         # 0501234567
-        return bool(re.match('^\+?(?:38)?0\d{9}$', phone))
+        return bool(re.match(r'^\+?(?:38)?0\d{9}$', phone))
 
     # user = UserModel._default_manager.get(phone=username)
     def authenticate(self, request, username=None, password=None, **kwargs):

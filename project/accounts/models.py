@@ -1,3 +1,5 @@
+import logging
+
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin, UserManager as OrigAuthUserManager
 from django.contrib.auth.base_user import AbstractBaseUser
@@ -85,6 +87,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def check_optpassword(self, password):
         if self.phone and password:
+            logging.warning(f' check otppassword correct={otp_storage.get(key=self.phone)}, test={password}')
             return password == otp_storage.get(key=self.phone)
         else:
             return False

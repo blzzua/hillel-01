@@ -1,23 +1,19 @@
-import logging
-
 from django.shortcuts import render, redirect
-from django.utils import cache
 from django.views.generic import TemplateView, RedirectView, FormView
 from django.views.generic.edit import FormMixin
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse
-from accounts.forms import RegistrationForm, LoginForm, OtpForm
+from accounts.forms import RegistrationForm, LoginForm, OtpForm, ConfirmPhoneForm
 from django.contrib.auth import get_user_model
 from project.celery import send_otp
 from project.constants import OTP_LENGTH
 from random import randint
-User = get_user_model()
-
 from django.core.cache import caches
+
+User = get_user_model()
 otp_storage = caches['otp']
 
 
-# Create your views here.
 class LoginView(FormView):
     template_name = 'accounts/login.html'
     get_redirect_url = 'accounts_personal_information'
@@ -38,7 +34,6 @@ class LoginView(FormView):
                 form.add_error('password', 'LOGIN FAILED')
                 context['form'] = form
 
-        logging.error(form.errors)
         #   request, template_name, context=None, content_type=None, status=None, using=None
         return render(request, template_name=self.get_template_names(), context=context)
 
@@ -85,18 +80,41 @@ class PersonalInformationView(AccountsIndexView):
         else:
             return redirect(reverse('accounts_login'))
 
+
 class SendOPTView(TemplateView, FormMixin):
     template_name = 'accounts/login.html'
     form_class = OtpForm
+
     def post(self, request):
         context = super().get_context_data()
         form = self.form_class(request.POST)
         if form.is_valid():
-            logging.warning(form.cleaned_data['phone_number'])
             phone_number = form.cleaned_data['phone_number']
             min_otp = 1
             max_otp = (10 ** OTP_LENGTH) - 1
             otp = str.zfill(str(randint(min_otp, max_otp)), OTP_LENGTH)
             otp_storage.set(key=phone_number, value=otp, timeout=60)
             send_otp.delay(phone_number=phone_number, otp=otp)
+        return render(request, template_name=self.get_template_names(), context=context)
+
+
+class ConfirmPhoneView(TemplateView, FormMixin):
+    template_name = 'accounts/confirm_phone.html'
+    form_class = ConfirmPhoneForm
+    get_redirect_url = 'accounts_personal_information'
+
+    def post(self, request):
+        context = super().get_context_data()
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            user = request.user
+            if otp_storage.get(key=form.cleaned_data['phone_number']) == form.cleaned_data['otp']:
+                user.phone = form.cleaned_data['phone_number']
+                user.save()
+                return redirect(to=self.get_redirect_url)
+            else:
+                form.add_error('otp', 'opt mismatch')
+                form.cleaned_data.update({'otp': ''})
+                context['form'] = form
+                return render(request, template_name=self.get_template_names(), context=context)
         return render(request, template_name=self.get_template_names(), context=context)
