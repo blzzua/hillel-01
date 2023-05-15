@@ -79,7 +79,7 @@ class OtpForm(Form):
 
 class ConfirmPhoneForm(Form):
     phone_number = CharField(label='Phone number', widget=TextInput(attrs={
-        'placeholder': '+389901234567',
+        'placeholder': '+380991234567',
         'title': 'phone number  (+380991234567, 380991234567, 0991234567)',
         'pattern': r'^\+?(?:38)?0\d{9}$',
         'tabindex': 1

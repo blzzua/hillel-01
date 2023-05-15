@@ -113,7 +113,7 @@ class ConfirmPhoneView(TemplateView, FormMixin):
                 user.save()
                 return redirect(to=self.get_redirect_url)
             else:
-                form.add_error('otp', 'opt mismatch')
+                form.add_error('otp', 'otp mismatch')
                 form.cleaned_data.update({'otp': ''})
                 context['form'] = form
                 return render(request, template_name=self.get_template_names(), context=context)
