@@ -9,6 +9,7 @@ from project.celery import send_otp
 from project.constants import OTP_LENGTH
 from random import randint
 from django.core.cache import caches
+from django.contrib import messages
 
 User = get_user_model()
 otp_storage = caches['otp']
@@ -29,6 +30,12 @@ class LoginView(FormView):
             )
             if user:
                 login(request, user)
+                messages.success(request=request, message=f'WELLCOME {user.email} info', extra_tags="HEADER")
+                messages.info(request=request, message=f'this is info message', extra_tags="HEADER")
+                messages.debug(request=request, message=f'this is debug message', extra_tags="HEADER")
+                messages.warning(request=request, message=f'this is warning message', extra_tags="HEADER")
+                messages.error(request=request, message=f'this is error message', extra_tags="HEADER")
+                messages.error(request=request, message=f'this is error message but not shown because does not have extratag')
                 return redirect('accounts_personal_information')
             else:
                 form.add_error('password', 'LOGIN FAILED')
