@@ -116,10 +116,23 @@ class ConfirmPhoneView(TemplateView, FormMixin):
         if form.is_valid():
             user = request.user
             if otp_storage.get(key=form.cleaned_data['phone_number']) == form.cleaned_data['otp']:
-                user.phone = form.cleaned_data['phone_number']
+                prev_phone = user.phone
+                new_phone = form.cleaned_data['phone_number']
+                if prev_phone:
+                    messages.success(request=request,
+                                     message=f'Your phone number changed from {user.phone} to {new_phone}',
+                                     extra_tags="HEADER")
+                else:
+                    messages.success(request=request,
+                                     message=f'Congrats. Your phone number now is {new_phone}',
+                                     extra_tags="HEADER")
+                user.phone = new_phone
                 user.save()
                 return redirect(to=self.get_redirect_url)
             else:
+                messages.error(request=request,
+                                 message=f'Wrong SMS code. Check phone number, request new code try again',
+                                 extra_tags="HEADER")
                 form.add_error('otp', 'otp mismatch')
                 form.cleaned_data.update({'otp': ''})
                 context['form'] = form
