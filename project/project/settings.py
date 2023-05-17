@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     #  internal packages
+    'main',
     'accounts',
     'items',
     'orders',
@@ -180,3 +181,21 @@ CELERY_BEAT_SCHEDULE = {
 
 # AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.EmailModelBackend', 'django.contrib.auth.backends.PhoneModelBackend', ]
 AUTHENTICATION_BACKENDS = ['accounts.auth_backends.EmailModelBackend', 'accounts.auth_backends.PhoneModelBackend']
+
+
+ADMINS = (('Admin', 'admin@shop.loc'), )
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 'EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_SUBJECT_PREFIX = 'Valheim Food Shop '
+
+try:
+    from .local_settings import *  # noqa
+except ImportError:
+    print('IMPORT LOCAL SETTINGS FAIL')
+    pass

@@ -16,7 +16,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
+# TODO: move MainPage from items.views to main.views
 from items.views import MainPage, ImportItemsListView, ExportItemsListView
+from main.views import ContactView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -24,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('', ItemsListView.as_view(), name='items_list'),
     path('', MainPage.as_view(), name='main_page'),
+    path('contacts/', ContactView.as_view(), name='main_contacts'),
     path('items/', include('items.urls')),
     path('order/', include('orders.urls')),
     path('accounts/', include('accounts.urls')),

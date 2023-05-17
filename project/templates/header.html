@@ -32,10 +32,12 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="{% url 'feedback_list' %}">Show Feedbacks</a></li>
               <li><a class="dropdown-item" href="{% url 'feedback_index' %}">Add feedback</a></li>
+              <li><a class="dropdown-item" href="{% url 'main_contacts' %}">Contact</a></li>
             </ul>
           </li>
         {% else %}
           <li class="nav-item"><a class="nav-link" href="{% url 'feedback_list' %}">Feedbacks</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'main_contacts' %}">Contact</a></li>
         {%endif%}
 
         {% if request.user.is_authenticated %}

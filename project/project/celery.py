@@ -1,7 +1,10 @@
 import logging
 import os
 import requests
-
+import smtplib
+from django.conf import settings
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from celery import Celery
 
@@ -57,3 +60,26 @@ def alert_order_task(self, order_id):
 def send_otp(self, phone_number, otp):
     message = f"""Код для входу valheim food shop для {phone_number}: {otp}"""
     send_to_telegram(message)
+
+
+@app.task(bind=True)
+def mail_admins_task(self, message_parts):
+    # receivers = ','.join([f'{addr}' for alias, addr in settings.ADMINS])
+    receivers = ','.join([f'{alias} <{addr}>' for alias, addr in settings.ADMINS])
+    msg = MIMEMultipart()
+    msg['From'] = settings.DEFAULT_FROM_EMAIL
+    msg['To'] = receivers
+    msg['Subject'] = message_parts['Subject']
+    body = message_parts['Body']
+    msg.attach(MIMEText(body, 'plain'))
+    try:
+        server = smtplib.SMTP(settings.EMAIL_HOST, int(settings.EMAIL_PORT))
+        server.starttls()
+        server.login(user=settings.EMAIL_HOST_USER, password=settings.EMAIL_HOST_PASSWORD)
+        text = msg.as_string()
+        logging.debug(f'Trying to send server.sendmail(\n{settings.DEFAULT_FROM_EMAIL}, \n{receivers},\n{text})\n\n')
+        server.sendmail(settings.DEFAULT_FROM_EMAIL, receivers, text)
+        server.quit()
+        logging.debug('Повідомлення успішно надіслано')
+    except Exception as e:
+        logging.error('Помилка підключення або відправки повідомлення:', str(e))
