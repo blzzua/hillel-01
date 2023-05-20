@@ -131,8 +131,8 @@ class ConfirmPhoneView(TemplateView, FormMixin):
                 return redirect(to=self.get_redirect_url)
             else:
                 messages.error(request=request,
-                                 message=f'Wrong SMS code. Check phone number, request new code try again',
-                                 extra_tags="HEADER")
+                               message=f'Wrong SMS code. Check phone number, request new code try again',
+                               extra_tags="HEADER")
                 form.add_error('otp', 'otp mismatch')
                 form.cleaned_data.update({'otp': ''})
                 context['form'] = form

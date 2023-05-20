@@ -1,12 +1,15 @@
 import uuid
 
 from django.contrib.auth import get_user_model
+from django.core.cache import caches
 from django.db import models
 from os import path
 
 from django.utils.safestring import mark_safe
 from currencies.models import Currency
 from decimal import Decimal
+from django.utils.functional import cached_property
+
 
 User = get_user_model()
 MIN_PRICE = 0.1
@@ -66,25 +69,29 @@ class Item(models.Model):
     img_preview.short_description = 'Image'
     img_preview.allow_tags = True
 
+    def _price_as_CCY(self, ccy_code):
+        cache = caches['ccy']
+        ccy = cache.get(ccy_code)
+        if not ccy:
+            ccy = Currency.objects.get(code=ccy_code)
+            cache.set(ccy_code, ccy)
+        return Decimal(self.price / ccy.amount)
+
     @property
     def price_as_DOGE(self):
-        doge_ccy = Currency.objects.get(code='DOGE')
-        return Decimal(self.price / doge_ccy.amount)
+        return Decimal(self._price_as_CCY(ccy_code='DOGE'))
 
     @property
     def price_as_UAH(self):
-        ccy = Currency.objects.get(code='UAH')
-        return round(Decimal(self.price / ccy.amount),5)
+        return round(self._price_as_CCY(ccy_code='UAH'), 5)
 
     @property
     def price_as_USD(self):
-        ccy = Currency.objects.get(code='USD')
-        return round(Decimal(self.price / ccy.amount),5)
+        return round(self._price_as_CCY(ccy_code='USD'), 5)
 
     @property
     def price_as_EUR(self):
-        ccy = Currency.objects.get(code='EUR')
-        return round(Decimal(self.price / ccy.amount),5)
+        return round(self._price_as_CCY(ccy_code='EUR'), 5)
 
 
 class Discount(models.Model):

@@ -1,6 +1,6 @@
 # from django.core.mail import mail_admins
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, FormView
+from django.views.generic import FormView
 from main.forms import ContactForm
 from project.celery import mail_admins_task
 

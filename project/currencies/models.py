@@ -1,8 +1,5 @@
 from django.db import models
-import uuid
-
 from project.constants import MAX_DIGITS
-
 from project.model_choices import Currencies
 
 
@@ -14,4 +11,3 @@ class Currency(models.Model):
 
     def __str__(self):
         return f"{self.code} - {self.amount}"
-

@@ -1,5 +1,3 @@
-import logging
-
 from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 from django.views.generic import FormView, ListView
@@ -43,7 +41,6 @@ class RemoveFromFavoritesView(FormView):
             for fi in queryset:
                 fi.delete()
         return redirect('favorite_list')
-
 
 
 class FavoritesListView(ListView):

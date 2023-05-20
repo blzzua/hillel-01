@@ -12,13 +12,11 @@ from django.views import View
 
 from feedback.forms import FeedbackForm
 from feedback.models import Feedback
-from django.views.decorators.cache import cache_page
 from django.core.cache import caches
 from project.constants import CACHE_KEY
 
 # from django.core.cache import cache
 cache = caches['feedback']
-
 
 
 class FeedbackView(View):

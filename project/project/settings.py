@@ -167,7 +167,13 @@ CACHES = {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": os.environ.get("CELERY_BROKER_URL"),
 
-    }
+    },
+    "ccy": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "/tmp/django_cache/default",
+        "TIMEOUT": 3600,
+        "OPTIONS": {"MAX_ENTRIES": 10},
+    },
 
 }
 
