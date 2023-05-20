@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import Http404
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Prefetch
 
 from items.models import Item
 from orders.models import Order, OrderItem
@@ -68,7 +69,7 @@ class OrderDetailView(View):
 
     def get(self, request):
         user = request.user
-        order, is_created = Order.objects.get_or_create(
+        order, is_created = Order.objects.prefetch_related(Prefetch('order_items', queryset=OrderItem.objects.select_related('item_id'))).get_or_create(
             user_name=user, is_active=True,
             defaults={'order_number': 1, 'is_active': True, 'is_paid': False, 'is_active': True}
         )
@@ -77,10 +78,10 @@ class OrderDetailView(View):
             if prev_order:
                 order.order_number = prev_order.order_number + 1
                 order.save()
-
-        orderitems = [item for item in order.order_items.all()]
+            orderitems = []
+        else:
+            orderitems = order.order_items.all()
         context = {'order': order, 'orderitems': orderitems}
-
         return render(request, 'order/detail.html', context=context)
 
 
