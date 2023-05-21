@@ -1,3 +1,4 @@
+from django.http import HttpResponseNotFound
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, View, DetailView
@@ -130,13 +131,15 @@ class OrderConfirmView(View):
 class OrderClosedDetailView(View):
     def get(self, request, *args, **kwargs):
         order_id = kwargs.get('order_id')
-        # TODO check and show only user's orders
-        # user = request.user
-        order = Order.objects.get(id=order_id)
-        orderitems = [item for item in order.order_items.all()]
-        context = {'order': order, 'orderitems': orderitems}
-
-        return render(request, 'order/detailclosed.html', context=context)
+        order = Order.objects.prefetch_related(
+            Prefetch('order_items', queryset=OrderItem.objects.select_related('item_id'))
+        ).get(id=order_id)
+        if request.user == order.user_name or (request.user.is_staff or request.user.is_superuser):
+            orderitems = order.order_items.all()
+            context = {'order': order, 'orderitems': orderitems}
+            return render(request, 'order/detailclosed.html', context=context)
+        else:
+            return HttpResponseNotFound('This order not belong you')
 
 
 class OrderListView(ListView):
