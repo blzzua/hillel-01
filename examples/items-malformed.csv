@@ -1,0 +1,18 @@
+caption,image,sku,price,is_active,description
+Raspberry,products/images/2fdabd79-d01a-4e58-85c7-e56aa0b88ff9.webp,1001,5,True,"Raspberries are often found along the edges of large open meadows.
+Raspberries are valuable in both early game as a basic food item and in mid-late game as a necessary ingredient for the early-tier Queens jam and the Medium healing mead. Thus, gathering raspberries when encountered is usually valuable."
+Mushroom,products/images/3853c472-ab78-4551-8427-59cc86445b50.webp,1002,10,True,"Mushroom can be found on the ground in the Meadows, Black Forest and Swamp. Picked mushrooms will respawn after 240 minutes at the same place that they were picked. Unlike the case with raspberries and blueberries, which do not return if the plant itself is removed, mushrooms will return if the ground is cleared or even excavated."
+Honey,products/images/5b917624-4b10-4c66-8593-6100231d36b1.webp,1003,20,True,
+Boar meat,products/images/de3b0d28-1a1f-41d7-9ebb-71b35a3db02c.png,1004,20,False,"Boar meat is a basic food source, it can be found by killing Boars."
+Jan,no image,1011,-5,True,"Mauris dapibus erat enim, quis laoreet nisi vestibulum in. Donec nibh nulla, mollis et vulputate ut, tempor eget ipsum. Sed eget arcu nisi. Nulla ut faucibus sapien."
+Feb,no image,1012,5,True,"Mauris sit amet neque et elit volutpat vulputate. Ut viverra, magna a porta blandit, lacus lacus accumsan lectus, nec finibus leo ligula vulputate ligula. In ut tristique nisi. "
+Mar,no image,1013,FAIL,True,"Sed consectetur massa tempus mollis sagittis. Donec in ullamcorper nisi, ac mattis ex. Vivamus ac aliquam lectus. "
+Apr,no image,1014,5,True,"Quisque turpis lectus, bibendum ultrices iaculis non, commodo eget tortor."
+May,no image,1015,5,True,"Fusce nisl nibh, vehicula et elementum in, bibendum eu mauris. Mauris at tincidunt augue. Fusce auctor ex sed magna finibus bibendum. Nam vitae libero egestas, aliquam odio in, rhoncus ligula. Quisque accumsan dolor nulla, nec dapibus est interdum quis. Curabitur eu mattis arcu."
+Jun,no image,1016,5,FAIL,"Morbi ac tincidunt nunc. Praesent rutrum metus non risus fermentum, non aliquet augue hendrerit. Donec vel lacus euismod, euismod ipsum non, vehicula mi."
+Jul,no image,1017,5,True,"Maecenas hendrerit, felis a pretium ornare, lectus felis cursus nulla, vel aliquet libero enim nec tellus."
+Aug,no image,1018,5,True,"Aenean sed mi enim. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse potenti. Cras porta enim eu sem bibendum, id dignissim odio gravida. Morbi vestibulum ornare lacinia."
+Sep,no image,1019,FAIL,FAIL,"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ullamcorper feugiat eros, at tristique quam lobortis ac. Curabitur efficitur euismod congue."
+Oct,no image,1020,1,False,"Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Integer dapibus lacus vitae felis efficitur, non condimentum mi tincidunt. Nam tellus nunc, commodo non ligula eget, porttitor porttitor sapien. In hac habitasse platea dictumst. Sed id dignissim eros. Vestibulum dignissim iaculis egestas. Donec lorem dui, pharetra non vestibulum vulputate, placerat non orci."
+Nov,no image,1021,2,False,"Maecenas erat est, elementum at sem eu, rhoncus auctor ipsum. Donec velit ipsum, consectetur at velit id, scelerisque malesuada quam. Quisque tempor magna sed risus volutpat elementum. In ac tristique est. In auctor urna id sem aliquam, id ullamcorper velit interdum. Fusce interdum tortor at erat vulputate blandit. Phasellus tincidunt lorem posuere elit commodo, nec pellentesque diam vehicula. Curabitur finibus condimentum efficitur. Etiam et tincidunt est, sit amet cursus nisl."
+Dec,no image,1022,,,

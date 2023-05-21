@@ -9,7 +9,7 @@ on:
 
 jobs:
   flake8:
-    runs-on: [ ubuntu-latest, self-hosted ]
+    runs-on: self-hosted
     strategy:
       matrix:
         python-version: ["3.8"]

@@ -9,27 +9,28 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
+from dotenv import load_dotenv
 from pathlib import Path
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!isa%s^qu%d7#_e5h7q+^z-vsqm1=_bu%%v!8334d@ch9ec=_5'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,7 +38,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'items'
+    #  external packages
+    'django_admin_listfilter_dropdown',
+    'django_bootstrap5',
+    'django_celery_beat',
+    'django_celery_results',
+    #  internal packages
+    'main',
+    'accounts',
+    'items',
+    'orders',
+    'feedback',
+    'favorites',
+    'currencies',
 ]
 
 MIDDLEWARE = [
@@ -77,7 +90,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3-valheim',
     }
 }
 
@@ -100,6 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'accounts.User'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -112,17 +126,89 @@ USE_I18N = True
 
 USE_TZ = True
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = 'static_files/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "assets",
 ]
+
+STATIC_URL = "static/"
+STATIC_ROOT = 'static_files'
+STATICFILES_DIRS = ['assets']
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+INSTALLED_APPS.append('django_extensions')
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": "/tmp/django_cache/default",
+        "TIMEOUT": 600,
+        "OPTIONS": {"MAX_ENTRIES": 10},
+    },
+    "feedback": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": "/tmp/django_cache/feedback",
+        "OPTIONS": {"MAX_ENTRIES": 10},
+    },
+    "otp": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get("CELERY_BROKER_URL"),
+
+    },
+    "ccy": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "/tmp/django_cache/default",
+        "TIMEOUT": 3600,
+        "OPTIONS": {"MAX_ENTRIES": 10},
+    },
+
+}
+
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    'get_currencies_task': {
+        'task': 'currencies.tasks.get_currencies_task',
+        'schedule': crontab(hour='*', minute='*', day_of_week='*'),
+    },
+}
+
+# AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.EmailModelBackend', 'django.contrib.auth.backends.PhoneModelBackend', ]
+AUTHENTICATION_BACKENDS = ['accounts.auth_backends.EmailModelBackend', 'accounts.auth_backends.PhoneModelBackend']
+
+
+ADMINS = (('Admin', 'admin@shop.loc'), )
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 'EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_SUBJECT_PREFIX = 'Valheim Food Shop '
+
+try:
+    INSTALLED_APPS_PLUS = []
+    MIDDLEWARE_PLUS = []
+    from .local_settings import *  # noqa
+    MIDDLEWARE += MIDDLEWARE_PLUS
+    del MIDDLEWARE_PLUS
+    if 'main' in INSTALLED_APPS:
+        INSTALLED_APPS.insert(INSTALLED_APPS.index('main'), *INSTALLED_APPS_PLUS)
+        del INSTALLED_APPS_PLUS
+except ImportError:
+    print('IMPORT LOCAL SETTINGS FAIL')
+    pass
